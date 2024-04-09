@@ -1,34 +1,34 @@
 package logica;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
-public class Grilla<T>{
+public class Grilla{
     private final int n_filas;
     private final int n_columnas;
-    private int[] posicion_jugador;
-    private int[] posicion_robots;
-    private ArrayList<ArrayList<T>> matriz;
+    private final ArrayList<ArrayList<Object>> matriz = new ArrayList<ArrayList<Object>>();
 
-
-    public Grilla(int n_filas, int n_columnas, int[] posicion_robots) {
+    public Grilla(int n_filas, int n_columnas) {
         this.n_filas = n_filas;
         this.n_columnas = n_columnas;
-        this.posicion_jugador = new int[]{n_filas/2 , n_columnas/2};
-        this.posicion_robots = posicion_robots;
-        crearGrilla();
+        grillaEnBlanco();
     }
-
-    private void crearGrilla(){
-        this.matriz = new ArrayList<ArrayList<T>>();
-
-        for (int i = 0; i < n_filas; i++) {
-            ArrayList<T> fila = new ArrayList<T>();
-            for (int j = 0; j < n_columnas; j++) {
+    private void grillaEnBlanco(){
+        for (int i = 0; i < this.n_filas; i++) {
+            ArrayList<Object> fila = new ArrayList<Object>();
+            for (int j = 0; j < this.n_columnas; j++) {
                 fila.add(null);
             }
-            matriz.add(fila);
+            this.matriz.add(fila);
         }
     }
-    public void otorgarPosicion(Robot robot){
+    public void actualizarGrilla(Map<Object, int[]> posiciones_objetos) {
+        this.grillaEnBlanco();
+        for (Map.Entry<Object,int[]> entry : posiciones_objetos.entrySet()) {
+            Object objeto = entry.getKey();
+            int[] posicion = entry.getValue();
+            this.matriz.get(posicion[0]).set(posicion[1], objeto);
+        }
     }
 }
