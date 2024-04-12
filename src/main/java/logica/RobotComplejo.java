@@ -6,7 +6,7 @@ public class RobotComplejo implements Enemigo{
         if (!this.funcional) {
             return;
         }
-        posicion_actual = grilla.getPosicionRobot(this);
+        posicion_actual = grilla.getPosicionEnemigo(this);
         coordenadas_jugador = grilla.getPosicionJugador();
         var nueva_posicion = new int[]{posicion_actual[0], posicion_actual[1]};
 
