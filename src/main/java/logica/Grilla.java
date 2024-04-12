@@ -1,34 +1,48 @@
 package logica;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Grilla{
     private final int n_filas;
     private final int n_columnas;
-    private final ArrayList<ArrayList<Object>> matriz = new ArrayList<ArrayList<Object>>();
+    private int[] coordenadas_jugador;
+    private Map<Enemigo, int[]> posiciones = new HashMap<Enemigo, int[]>();
 
-    public Grilla(int n_filas, int n_columnas) {
+
+    public Grilla(int n_filas, int n_columnas, Jugador jugador, Enemigo[] enemigos) {
         this.n_filas = n_filas;
         this.n_columnas = n_columnas;
-        grillaEnBlanco();
+        this.coordenadasJugador = new int[]{n_filas/2, n_columnas/2};
+        grillaEnBlanco(enemigos);
     }
-    private void grillaEnBlanco(){
-        for (int i = 0; i < this.n_filas; i++) {
-            ArrayList<Object> fila = new ArrayList<Object>();
-            for (int j = 0; j < this.n_columnas; j++) {
-                fila.add(null);
-            }
-            this.matriz.add(fila);
+    private void grillaEnBlanco(Enemigo[] enemigos){
+        Set<int[]> set = new HashSet<int[]>();
+        set.add(this.coordenadas_jugador);
+        for (Enemigo enemigo : enemigos) {
+            int[] posicion = new int[]{(int) (Math.random() * n_filas), (int) (Math.random() * n_columnas)};
+
+            while (set.contains(posicion)) {
+                posicion[0] = (int) (Math.random() * n_filas);
+                posicion[1] = (int) (Math.random() * n_columnas);
+                }
+
+            set.add(posicion);
+            this.posiciones.put(enemigo,posicion);
         }
     }
-    public void actualizarGrilla(Map<Object, int[]> posiciones_objetos) {
-        this.grillaEnBlanco();
-        for (Map.Entry<Object,int[]> entry : posiciones_objetos.entrySet()) {
-            Object objeto = entry.getKey();
-            int[] posicion = entry.getValue();
-            this.matriz.get(posicion[0]).set(posicion[1], objeto);
-        }
+    public void setPosicionEnemigo(Enemigo enemigo, int[] coordenada) {
+        this.posiciones.put(enemigo,coordenada);
+    }
+    public int[] getPosicionEnemigo(Enemigo enemigo) {
+        return this.posiciones.get(enemigo);
+    }
+    public void setPosicionJugador(int[] coordenadas){
+        this.coordenadas_jugador=coordenadas;
+    }
+    public int[] getPosicionJugador() {
+        return this.coordenadas_jugador;
     }
 }
