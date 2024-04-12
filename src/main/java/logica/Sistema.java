@@ -22,7 +22,7 @@ public class Sistema {
         this.nivel = 1;
         this.jugador = Jugador();
         crearEnemigos(nivel, n_fil, n_col);
-        this.grilla = Grilla(n_fil, n_col, this.jugador, this.enemigos);
+        this.grilla = Grilla(n_fil, n_col, this.enemigos);
     }
 
     private void crearEnemigos(int nivel, int n_fil, int n_col) {
