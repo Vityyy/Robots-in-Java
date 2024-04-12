@@ -10,15 +10,13 @@ public class Grilla{
     private final int n_columnas;
     private int[] coordenadas_jugador;
     private Map<Enemigo, int[]> posiciones = new HashMap<Enemigo, int[]>();
-
-
     public Grilla(int n_filas, int n_columnas, Jugador jugador, Enemigo[] enemigos) {
         this.n_filas = n_filas;
         this.n_columnas = n_columnas;
         this.coordenadas_jugador = new int[]{n_filas/2, n_columnas/2};
-        grillaEnBlanco(enemigos);
+        inicializarGrilla(enemigos);
     }
-    private void grillaEnBlanco(Enemigo[] enemigos){
+    private void inicializarGrilla(Enemigo[] enemigos){
         Set<int[]> set = new HashSet<int[]>();
         set.add(this.coordenadas_jugador);
         for (Enemigo enemigo : enemigos) {
