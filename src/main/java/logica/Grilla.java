@@ -31,8 +31,25 @@ public class Grilla{
             this.posiciones.put(enemigo,posicion);
         }
     }
-    public void setPosicionEnemigo(Enemigo enemigo, int[] coordenada) {
-        this.posiciones.put(enemigo,coordenada);
+    public boolean actualizarGrilla(){
+        Map<Enemigo, int[]> nuevas_posiciones = new HashMap<Enemigo, int[]>();
+        Map<int[], Enemigo> posibles_colisiones = new HashMap<int[], Enemigo>();
+
+        for(Enemigo enemigo : this.posiciones.keySet()){
+            int[] posicion_nueva = enemigo.moverse(this);
+
+            if (this.coordenadas_jugador == posicion_nueva){
+                return true;
+            }
+            if (posibles_colisiones.containsKey(posicion_nueva)){
+                enemigo.setNoFuncional();
+                posibles_colisiones.get(posicion_nueva).setNoFuncional();
+            }
+            nuevas_posiciones.put(enemigo,posicion_nueva);
+            posibles_colisiones.put(posicion_nueva, enemigo);
+        }
+        this.posiciones = nuevas_posiciones;
+        return false;
     }
     public int[] getPosicionEnemigo(Enemigo enemigo) {
         return this.posiciones.get(enemigo);
