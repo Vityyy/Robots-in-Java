@@ -15,7 +15,7 @@ public class Grilla{
     public Grilla(int n_filas, int n_columnas, Jugador jugador, Enemigo[] enemigos) {
         this.n_filas = n_filas;
         this.n_columnas = n_columnas;
-        this.coordenadasJugador = new int[]{n_filas/2, n_columnas/2};
+        this.coordenadas_jugador = new int[]{n_filas/2, n_columnas/2};
         grillaEnBlanco(enemigos);
     }
     private void grillaEnBlanco(Enemigo[] enemigos){
@@ -40,7 +40,7 @@ public class Grilla{
         return this.posiciones.get(enemigo);
     }
     public void setPosicionJugador(int[] coordenadas){
-        this.coordenadas_jugador=coordenadas;
+        this.coordenadas_jugador = coordenadas;
     }
     public int[] getPosicionJugador() {
         return this.coordenadas_jugador;
