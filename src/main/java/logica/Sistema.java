@@ -19,7 +19,6 @@ public class Sistema {
         this.tpsSeguros = 2;
         this.nivel = 1;
         this.jugador = new Jugador();
-
         crearEnemigos(nivel);
         this.grilla = new Grilla(n_fil, n_col, this.enemigos);
     }
@@ -44,12 +43,6 @@ public class Sistema {
         this.jugador.moverse(coordenadas, this.grilla);
         boolean juego_terminado = this.grilla.actualizarGrilla();
         if (juego_terminado){
-            finalizarPartida();
-        }
-    }
-
-    public void comprobarColisiones(){
-        if (this.grilla.actualizarGrilla()){
             finalizarPartida();
         }
     }
