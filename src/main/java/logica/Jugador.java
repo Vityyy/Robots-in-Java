@@ -1,19 +1,19 @@
 package logica;
 
-public class Jugador implements Movimiento{
+public class Jugador {
+    private boolean vivo = true;
 
-    private boolean vivo;
-
-    public Jugador() {
-    }
-    @Override
-    public void moverse( int[] coordenadas){
-        posicion_actual = Grilla.getPosicionJugador();
-
-        int[] nueva_posicion = {posicion_actual[0],posicion_actual[1]};
-        nueva_posicion[0] += Integer.compare(coordenadas[0],posicion_actual[0]);
-        nueva_posicion[1] += Integer.compare(coordenadas[1],posicion_actual[1]);
-        
+    public void moverse(int[] coordenadas, Grilla Grilla) {
+        int[] posicion_actual = Grilla.getPosicionJugador();
+        int[] nueva_posicion = {posicion_actual[0], posicion_actual[1]};
+        nueva_posicion[0] += Integer.compare(coordenadas[0], posicion_actual[0]);
+        nueva_posicion[1] += Integer.compare(coordenadas[1], posicion_actual[1]);
         Grilla.setPosicionJugador(nueva_posicion);
+    }
+    public boolean getEstadoJugador() {
+        return vivo;
+    }
+    public void setJugadorMuerto(boolean vivo) {
+        this.vivo = false;
     }
 }
