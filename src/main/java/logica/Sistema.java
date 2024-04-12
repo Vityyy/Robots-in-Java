@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 
 public class Sistema {
-
     private final int n_fil = 45;
     private final int n_col = 45;
     private Jugador jugador;
@@ -31,7 +30,6 @@ public class Sistema {
         int maxEnemigos = (n_fil * n_col * nivel) / 40;
         int cantSimples = (maxEnemigos * 3) / 4;
         int cantComplejos = (maxEnemigos) / 4;
-
         for(int i = 0; i <= cantSimples; i++) {
             var enemigo = new RobotSimple();
             enemigos.add(enemigo);
@@ -44,15 +42,16 @@ public class Sistema {
     }
 
     public void jugarTurno(int[] coordenadas){
-        this.jugador.moverse(coordenadas,this.grilla);
+        this.jugador.moverse(coordenadas, this.grilla);
         for (Enemigo enemigo : this.enemigos){
             enemigo.moverse(this.grilla);
         }
+        comprobarColisiones();
     }
-    public int getScore() {
-        return Score;
-    }
-    public int getTpsSeguros() {
-        return Tps_seguros;
+
+    public comprobarColisiones(){
+        if (this.grilla.colisionJugador()){
+            finalizarPartida();
+        }
     }
 }
