@@ -1,7 +1,5 @@
 package logica;
 
-import java.util.ArrayList;
-
 
 //HACER CONSTANTES LOS NÚMEROS DE MIERDA
 
@@ -10,7 +8,7 @@ public class Sistema {
     private final int n_fil = 45;
     private final int n_col = 45;
     private Jugador jugador;
-    private ArrayList<Enemigo> enemigos;
+    private Enemigo[] enemigos;
     private int nivel;
     private int Score;
     private int tpsSeguros;
@@ -20,38 +18,42 @@ public class Sistema {
         this.Score = 0;
         this.tpsSeguros = 2;
         this.nivel = 1;
-        this.jugador = Jugador();
-        crearEnemigos(nivel, n_fil, n_col);
-        this.grilla = Grilla(n_fil, n_col, this.enemigos);
+        this.jugador = new Jugador();
+
+        crearEnemigos(nivel);
+        this.grilla = new Grilla(n_fil, n_col, this.enemigos);
     }
 
-    private void crearEnemigos(int nivel, int n_fil, int n_col) {
-        var enemigos = new ArrayList<Enemigo>();
-        int maxEnemigos = (n_fil * n_col * nivel) / 40;
+    private void crearEnemigos(int nivel) {
+        int maxEnemigos = (this.n_fil * this.n_col * nivel) / 40;
+        Enemigo[] enemigos = new Enemigo[maxEnemigos];
         int cantSimples = (maxEnemigos * 3) / 4;
-        int cantComplejos = (maxEnemigos) / 4;
-        for(int i = 0; i <= cantSimples; i++) {
+
+        for(int i = 0; i < cantSimples; i++) {
             var enemigo = new RobotSimple();
-            enemigos.add(enemigo);
+            enemigos[i] = enemigo;
         }
-        for(int i=0; i<= cantComplejos;i++) {
+        for(int j = cantSimples; j< maxEnemigos; j++) {
             var enemigo = new RobotComplejo();
-            enemigos.add(enemigo);
+            enemigos[j] = enemigo;
         }
         this.enemigos = enemigos;
     }
 
     public void jugarTurno(int[] coordenadas){
         this.jugador.moverse(coordenadas, this.grilla);
-        for (Enemigo enemigo : this.enemigos){
-            enemigo.moverse(this.grilla);
-        }
-        comprobarColisiones();
-    }
-
-    public comprobarColisiones(){
-        if (this.grilla.colisionJugador()){
+        boolean juego_terminado = this.grilla.actualizarGrilla();
+        if (juego_terminado){
             finalizarPartida();
         }
+    }
+
+    public void comprobarColisiones(){
+        if (this.grilla.actualizarGrilla()){
+            finalizarPartida();
+        }
+    }
+
+    private void finalizarPartida() {
     }
 }

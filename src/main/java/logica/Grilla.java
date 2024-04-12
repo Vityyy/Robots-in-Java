@@ -10,7 +10,7 @@ public class Grilla{
     private final int n_columnas;
     private int[] coordenadas_jugador;
     private Map<Enemigo, int[]> posiciones = new HashMap<Enemigo, int[]>();
-    public Grilla(int n_filas, int n_columnas, Jugador jugador, Enemigo[] enemigos) {
+    public Grilla(int n_filas, int n_columnas, Enemigo[] enemigos) {
         this.n_filas = n_filas;
         this.n_columnas = n_columnas;
         this.coordenadas_jugador = new int[]{n_filas/2, n_columnas/2};
