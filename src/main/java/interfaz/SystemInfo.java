@@ -1,4 +1,4 @@
-package org.example;
+package interfaz;
 
 public class SystemInfo {
 
