@@ -1,6 +1,9 @@
 package interfaz;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,7 +21,9 @@ import javafx.stage.Stage;
 import javafx.scene.*;
 import javafx.scene.paint.*;
 import javafx.scene.canvas.*;
+import logica.Sistema;
 
+import java.util.ArrayList;
 
 
 /**
@@ -34,12 +39,71 @@ public class App extends Application {
     private int COLUMNAS = 40;
     private int CASILLA_ANCHO = ANCHO_CANVAS / COLUMNAS;
     private int CASILLA_ALTO = (ALTO_VENTANA - 100) / FILAS;
-
-    //private int CASILLA_TAMAÑO = Math.min(ANCHO_CANVAS / COLUMNAS, ALTO_CANVAS / FILAS);
+    private Sistema sistema;
 
     @Override
     public void start(Stage stage) {
 
+        this.sistema = new Sistema();
+
+        VBox titulo_stats = inicializar_textos();;
+
+        Boton[] botones = inicializar_botones();
+        Boton boton_tp_aleatorio = botones[0]; Boton boton_tp = botones[1]; Boton boton_no_moverser = botones[2];
+        boton_tp.setOnAction(boton_tp.ActivarEvento());
+        boton_tp_aleatorio.setOnAction((boton_tp_aleatorio.ActivarEvento()));
+        boton_no_moverser.setOnAction((boton_no_moverser.ActivarEvento()));
+
+        StackPane root = new StackPane();
+        StackPane pane = new StackPane();
+        Scene scene = new Scene(root, ANCHO_VENTANA, ALTO_VENTANA, Color.BLACK);
+        Canvas casilla_superior = new Canvas(ANCHO_CANVAS, 200);
+        Canvas casilla_inferior = new Canvas(ANCHO_CANVAS, 200);
+        Tablero tablero = new Tablero(ANCHO_VENTANA, ALTO_VENTANA, ANCHO_CANVAS, ALTO_CANVAS, FILAS, COLUMNAS, CASILLA_ANCHO, CASILLA_ALTO);
+
+        Canvas canvas = tablero.ActualizarTablero(sistema.estadoJuego());
+        posicionar_interfaz(canvas, casilla_superior, casilla_inferior, boton_tp, boton_tp_aleatorio, boton_no_moverser, titulo_stats);
+
+
+        GraphicsContext barra_superior = casilla_superior.getGraphicsContext2D();
+        GraphicsContext barra_inferior = casilla_inferior.getGraphicsContext2D();
+        barra_superior.setFill(Color.SLATEGRAY);
+        barra_inferior.setFill(Color.SLATEGRAY);
+        barra_superior.fillRoundRect(0, 0, ANCHO_CANVAS, 150, 40, 40);
+        barra_inferior.fillRoundRect(0, 50, ANCHO_CANVAS, 150, 40, 40);
+
+        root.getChildren().add(pane);
+        pane.getChildren().addAll(canvas, casilla_superior, casilla_inferior, boton_tp_aleatorio, boton_tp, boton_no_moverser, titulo_stats);
+        stage.setScene(scene);
+        stage.show();
+
+
+        /*scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+            System.out.println("x: " + x + " y: " + y);
+        });*/
+    }
+
+    public static void main(String[] args) {
+        launch();
+    }
+
+
+    private static void posicionar_interfaz(Canvas canvas, Canvas casilla_superior, Canvas casilla_inferior, Button tp_seguro, Button tp_aleatorio, Button no_moverse, VBox titulo_stats) {
+        StackPane.setAlignment(canvas, Pos.CENTER);
+        StackPane.setAlignment(casilla_superior, Pos.TOP_CENTER);
+        StackPane.setAlignment(casilla_inferior, Pos.BOTTOM_CENTER);
+        StackPane.setAlignment(tp_seguro, Pos.BOTTOM_LEFT);
+        StackPane.setAlignment(tp_aleatorio, Pos.BOTTOM_CENTER);
+        StackPane.setAlignment(no_moverse, Pos.BOTTOM_RIGHT);
+
+        titulo_stats.setAlignment(Pos.TOP_CENTER);
+        titulo_stats.setPadding(new Insets(25, 0, 0, 0));
+        titulo_stats.setSpacing(10);
+    }
+
+    private static VBox inicializar_textos() {
         Text titulo = new Text("Robots");
         Text stats = new Text("Level: pene vs Score: vagina");
         stats.setFill(Color.LIGHTGRAY);
@@ -48,74 +112,29 @@ public class App extends Application {
 
         VBox titulo_stats = new VBox();
         titulo_stats.getChildren().addAll(titulo, stats);
-        titulo_stats.setAlignment(Pos.TOP_CENTER);
-        titulo_stats.setPadding(new Insets(25, 0, 0, 0));
-        titulo_stats.setSpacing(10);
 
+        return titulo_stats;
+    }
 
-        Button tp_aleatorio = new Button("Teleport Randomly");
-        tp_aleatorio.setPrefSize(200,100);
-
-        Button tp_seguro = new Button("Teleport Safely");
-        tp_seguro.setPrefSize(200,100);
-
-        Button no_moverse = new Button("Wait for Robots");
-        no_moverse.setPrefSize(200,100);
-
-        Button configuracion = new Button();
-
-        StackPane root = new StackPane();
-        StackPane pane = new StackPane();
-
-        Scene scene = new Scene(root,ANCHO_VENTANA, ALTO_VENTANA, Color.BLACK);
-
-        Canvas casilla_superior = new Canvas(ANCHO_CANVAS,200);
-        Canvas casilla_inferior = new Canvas(ANCHO_CANVAS, 200);
-        Canvas canvas = new Canvas(ANCHO_CANVAS, ALTO_CANVAS);
-
-        StackPane.setAlignment(canvas, Pos.CENTER);
-        StackPane.setAlignment(casilla_superior, Pos.TOP_CENTER);
-        StackPane.setAlignment(casilla_inferior, Pos.BOTTOM_CENTER);
-        StackPane.setAlignment(tp_seguro, Pos.BOTTOM_LEFT);
-        StackPane.setAlignment(tp_aleatorio, Pos.BOTTOM_CENTER);
-        StackPane.setAlignment(no_moverse, Pos.BOTTOM_RIGHT);
-
-
-        pane.getChildren().addAll(canvas, casilla_superior, casilla_inferior, tp_aleatorio, tp_seguro, no_moverse, titulo_stats);
-
-        GraphicsContext barra_superior = casilla_superior.getGraphicsContext2D();
-        GraphicsContext barra_inferior = casilla_inferior.getGraphicsContext2D();
-        barra_superior.setFill(Color.SLATEGRAY);
-        barra_inferior.setFill(Color.SLATEGRAY);
-        barra_superior.fillRoundRect(0, 0, ANCHO_CANVAS , 150, 40, 40);;
-        barra_inferior.fillRoundRect(0,50 , ANCHO_CANVAS, 150, 40, 40);
-
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            double x = mouseEvent.getX();
-            double y = mouseEvent.getY();
-            System.out.println("x: " + x + " y: " + y);
-        });
-
-        for (int x = 0; x <= COLUMNAS; x++) {
-            for (int y = 0; y <= FILAS; y++) {
-                if ((x + y) % 2 == 0) {
-                    gc.setFill(Color.WHITE);
-                } else {
-                    gc.setFill(Color.GRAY);
-                }
-                gc.fillRect(x * CASILLA_ANCHO, y * CASILLA_ALTO, CASILLA_ANCHO, CASILLA_ALTO);
+    private static Boton[] inicializar_botones() {
+        EventHandler<ActionEvent> evento_tp_aleatorio = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
             }
-        }
-
-        root.getChildren().add(pane);
-        stage.setScene(scene);
-        stage.show();
+        };
+        EventHandler<ActionEvent> evento_tp_seguro = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            }
+        };
+        EventHandler<ActionEvent> evento_no_moverse = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            }
+        };
+        Boton tp_aleatorio = new Boton("TP ALEATORIO",evento_tp_aleatorio,430,140);
+        Boton tp_seguro = new Boton("TP SEGURO", evento_tp_seguro,430,140);
+        Boton no_moverse = new Boton("NO MOVERSE",evento_no_moverse,430,140);
+        return new Boton[]{tp_aleatorio, tp_seguro, no_moverse};
     }
-
-    public static void main(String[] args) {
-        launch();
-    }
-
 }

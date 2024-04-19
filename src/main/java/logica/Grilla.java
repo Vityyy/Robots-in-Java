@@ -54,6 +54,7 @@ public class Grilla{
     public int[] getPosicionEnemigo(Enemigo enemigo) {
         return this.posiciones.get(enemigo);
     }
+    public Map<Enemigo, int[]> getPosicionesEnemigos() {return this.posiciones;}
     public void setPosicionJugador(int[] coordenadas){
         this.coordenadas_jugador = coordenadas;
     }

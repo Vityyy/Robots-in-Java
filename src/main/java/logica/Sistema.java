@@ -3,6 +3,8 @@ package logica;
 
 //HACER CONSTANTES LOS NÚMEROS DE MIERDA
 
+import java.util.ArrayList;
+import java.util.Map;
 
 public class Sistema {
     private final int n_fil = 45;
@@ -45,6 +47,15 @@ public class Sistema {
         if (juego_terminado){
             finalizarPartida();
         }
+    }
+
+    public ArrayList<Object> estadoJuego(){
+        Map<Enemigo, int[]> posiciones_enemigos = this.grilla.getPosicionesEnemigos();
+        int[] posicion_jugador = this.grilla.getPosicionJugador();
+        ArrayList<Object> resultado = new ArrayList<Object>();
+        resultado.add(posicion_jugador);
+        resultado.add(posiciones_enemigos);
+        return resultado;
     }
 
     private void finalizarPartida() {
