@@ -3,8 +3,11 @@ package interfaz;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import logica.Enemigo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Tablero {
 
@@ -31,15 +34,31 @@ public class Tablero {
     public Canvas ActualizarTablero(ArrayList<Object> estado_juego) {
         Canvas canvas = new Canvas(ancho_canvas, alto_canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        var posicion_jugador = (int[]) estado_juego.get(0);
+        var posiciones_robots = (HashMap<Enemigo,int[]>) estado_juego.get(1);
 
-        for (int x = 0; x <= columnas; x++) {
-            for (int y = 0; y <= filas; y++) {
+        for (int x = 0; x <= filas; x++) {
+            for (int y = 0; y <= columnas; y++) {
                 if ((x + y) % 2 == 0) {
                     gc.setFill(Color.WHITE);
                 } else {
                     gc.setFill(Color.GRAY);
                 }
                 gc.fillRect(x * casillas_ancho, y * casilla_alto, casillas_ancho, casilla_alto);
+            }
+        }
+        gc.setFill(Color.BLACK);
+        gc.setFont(Font.font("Arial", 20));
+        gc.fillText("X", posicion_jugador[0] * casillas_ancho, posicion_jugador[1] * casilla_alto);
+
+        for (Enemigo enemigo : posiciones_robots.keySet()){
+            var coordenadas_robot = posiciones_robots.get(enemigo);
+            if (enemigo.getFuncional() && (enemigo.getClass().getName().equals("logica.RobotSimple"))){
+                gc.fillText("S",coordenadas_robot[0] * casillas_ancho,coordenadas_robot[1] * casilla_alto);
+            }else if (enemigo.getFuncional() && (enemigo.getClass().getName().equals("logica.RobotComplejo"))){
+                gc.fillText("C",coordenadas_robot[0] * casillas_ancho,coordenadas_robot[1] * casilla_alto);
+            }else{
+                gc.fillText("M",coordenadas_robot[0] * casillas_ancho,coordenadas_robot[1] * casilla_alto);
             }
         }
         return canvas;

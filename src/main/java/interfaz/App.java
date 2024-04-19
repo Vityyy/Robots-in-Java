@@ -1,5 +1,6 @@
 package interfaz;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -38,8 +39,10 @@ public class App extends Application {
     private int FILAS = 40;
     private int COLUMNAS = 40;
     private int CASILLA_ANCHO = ANCHO_CANVAS / COLUMNAS;
-    private int CASILLA_ALTO = (ALTO_VENTANA - 100) / FILAS;
+    private int CASILLA_ALTO = ALTO_VENTANA / FILAS;
+
     private Sistema sistema;
+
 
     @Override
     public void start(Stage stage) {
@@ -50,21 +53,27 @@ public class App extends Application {
 
         Boton[] botones = inicializar_botones();
         Boton boton_tp_aleatorio = botones[0]; Boton boton_tp = botones[1]; Boton boton_no_moverser = botones[2];
-        boton_tp.setOnAction(boton_tp.ActivarEvento());
-        boton_tp_aleatorio.setOnAction((boton_tp_aleatorio.ActivarEvento()));
-        boton_no_moverser.setOnAction((boton_no_moverser.ActivarEvento()));
 
         StackPane root = new StackPane();
         StackPane pane = new StackPane();
         Scene scene = new Scene(root, ANCHO_VENTANA, ALTO_VENTANA, Color.BLACK);
-        Canvas casilla_superior = new Canvas(ANCHO_CANVAS, 200);
-        Canvas casilla_inferior = new Canvas(ANCHO_CANVAS, 200);
+        Canvas casilla_superior = new Canvas(ANCHO_CANVAS, 150);
+        Canvas casilla_inferior = new Canvas(ANCHO_CANVAS, 150);
         Tablero tablero = new Tablero(ANCHO_VENTANA, ALTO_VENTANA, ANCHO_CANVAS, ALTO_CANVAS, FILAS, COLUMNAS, CASILLA_ANCHO, CASILLA_ALTO);
 
         Canvas canvas = tablero.ActualizarTablero(sistema.estadoJuego());
+        boton_tp.setOnAction(boton_tp.ActivarEvento());
+        boton_tp_aleatorio.setOnAction((boton_tp_aleatorio.ActivarEvento()));
+        boton_no_moverser.setOnAction((boton_no_moverser.ActivarEvento()));
+
+        scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
+            int[] coordenadas = new int[]{(int) mouseEvent.getX() / CASILLA_ANCHO, (int) mouseEvent.getY() / CASILLA_ALTO};
+            sistema.jugarTurno(coordenadas);
+            tablero.ActualizarTablero(sistema.estadoJuego());
+        });
+
+
         posicionar_interfaz(canvas, casilla_superior, casilla_inferior, boton_tp, boton_tp_aleatorio, boton_no_moverser, titulo_stats);
-
-
         GraphicsContext barra_superior = casilla_superior.getGraphicsContext2D();
         GraphicsContext barra_inferior = casilla_inferior.getGraphicsContext2D();
         barra_superior.setFill(Color.SLATEGRAY);
@@ -76,17 +85,11 @@ public class App extends Application {
         pane.getChildren().addAll(canvas, casilla_superior, casilla_inferior, boton_tp_aleatorio, boton_tp, boton_no_moverser, titulo_stats);
         stage.setScene(scene);
         stage.show();
-
-
-        /*scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            double x = mouseEvent.getX();
-            double y = mouseEvent.getY();
-            System.out.println("x: " + x + " y: " + y);
-        });*/
     }
 
+
     public static void main(String[] args) {
-        launch();
+        Application.launch();
     }
 
 
@@ -120,6 +123,7 @@ public class App extends Application {
         EventHandler<ActionEvent> evento_tp_aleatorio = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                System.out.println("TOCASTE BOTON ALEATORIO");
             }
         };
         EventHandler<ActionEvent> evento_tp_seguro = new EventHandler<ActionEvent>() {
@@ -132,9 +136,9 @@ public class App extends Application {
             public void handle(ActionEvent event) {
             }
         };
-        Boton tp_aleatorio = new Boton("TP ALEATORIO",evento_tp_aleatorio,430,140);
-        Boton tp_seguro = new Boton("TP SEGURO", evento_tp_seguro,430,140);
-        Boton no_moverse = new Boton("NO MOVERSE",evento_no_moverse,430,140);
+        Boton tp_aleatorio = new Boton("TP ALEATORIO",evento_tp_aleatorio,430,150);
+        Boton tp_seguro = new Boton("TP SEGURO", evento_tp_seguro,430,150);
+        Boton no_moverse = new Boton("NO MOVERSE",evento_no_moverse,430,150);
         return new Boton[]{tp_aleatorio, tp_seguro, no_moverse};
     }
 }

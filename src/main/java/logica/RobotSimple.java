@@ -14,8 +14,7 @@ public class RobotSimple implements Enemigo{
 
         return nueva_posicion;
     }
-    public void setNoFuncional(){
-        this.funcional = false;
-    }
+    public void setNoFuncional(){this.funcional = false;}
+    public boolean getFuncional(){return this.funcional;}
 }
 

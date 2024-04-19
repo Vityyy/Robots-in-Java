@@ -19,4 +19,5 @@ public class RobotComplejo implements Enemigo{
     public void setNoFuncional(){
         this.funcional = false;
     }
+    public boolean getFuncional(){return this.funcional; }
 }

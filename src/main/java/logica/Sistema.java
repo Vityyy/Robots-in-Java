@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Sistema {
-    private final int n_fil = 45;
-    private final int n_col = 45;
+    private final int n_fil = 40;
+    private final int n_col = 40;
     private Jugador jugador;
     private Enemigo[] enemigos;
     private int nivel;

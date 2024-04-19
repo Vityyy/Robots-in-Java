@@ -51,6 +51,7 @@ public class Grilla{
         this.posiciones = nuevas_posiciones;
         return false;
     }
+
     public int[] getPosicionEnemigo(Enemigo enemigo) {
         return this.posiciones.get(enemigo);
     }
