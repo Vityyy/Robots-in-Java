@@ -31,7 +31,7 @@ public class Tablero {
         this.casilla_alto = casilla_alto;
     }
 
-    public Canvas ActualizarTablero(ArrayList<Object> estado_juego) {
+    public Canvas ActualizarTablero(ArrayList<Object> estado_juego, int Tamanios_Menues) {
         Canvas canvas = new Canvas(ancho_canvas, alto_canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         var posicion_jugador = (int[]) estado_juego.get(0);
@@ -49,7 +49,7 @@ public class Tablero {
         }
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font("Arial", 20));
-        gc.fillText("X", posicion_jugador[0] * casillas_ancho, posicion_jugador[1] * casilla_alto);
+        gc.fillText("X", (posicion_jugador[0] * casilla_alto)+Tamanios_Menues-casilla_alto, posicion_jugador[1] * casillas_ancho);
 
         for (Enemigo enemigo : posiciones_robots.keySet()){
             var coordenadas_robot = posiciones_robots.get(enemigo);

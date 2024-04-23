@@ -11,8 +11,8 @@ public class RobotComplejo implements Enemigo{
         int[] nueva_posicion = new int[]{posicion_actual[0], posicion_actual[1]};
 
         for (int i = 0; i < 2; i++) {
-            nueva_posicion[0] = Integer.compare(coordenadas_jugador[0], posicion_actual[0]);
-            nueva_posicion[1] = Integer.compare(coordenadas_jugador[1], posicion_actual[1]);
+            nueva_posicion[0] += Integer.compare(coordenadas_jugador[0], posicion_actual[0]);
+            nueva_posicion[1] += Integer.compare(coordenadas_jugador[1], posicion_actual[1]);
         }
         return nueva_posicion;
     }

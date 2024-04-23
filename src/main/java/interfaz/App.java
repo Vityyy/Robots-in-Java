@@ -31,79 +31,79 @@ import java.util.ArrayList;
  * JavaFX App
  */
 public class App extends Application {
-
-    private int ANCHO_VENTANA = 1300;
+    private static int TAMANIO_MENUES = 150;
+    private static int ALTO_VENTANA = 900;
+    private static int FILAS = 40;
+    private static int COLUMNAS = 40;
+    private static int CASILLA_TAMANIO = (ALTO_VENTANA - TAMANIO_MENUES * 2) / FILAS;
+    private static int CASILLA_ANCHO = CASILLA_TAMANIO;
+    private static int CASILLA_ALTO = CASILLA_TAMANIO;
+    private static int ANCHO_CANVAS = CASILLA_ANCHO * COLUMNAS;
+    private static int ALTO_CANVAS = CASILLA_ALTO * FILAS;
+    private static int ANCHO_VENTANA = ANCHO_CANVAS;
+    /*private int ANCHO_VENTANA = 1300;
     private int ALTO_VENTANA = 900;
-    private int ANCHO_CANVAS = 1300;
-    private int ALTO_CANVAS = 600;
     private int FILAS = 40;
     private int COLUMNAS = 40;
-    private int CASILLA_ANCHO = ANCHO_CANVAS / COLUMNAS;
-    private int CASILLA_ALTO = ALTO_VENTANA / FILAS;
+    private int CASILLA_AUX = Math.min(ANCHO_VENTANA / COLUMNAS, ALTO_VENTANA / FILAS);;
+    private int ANCHO_CANVAS = CASILLA_AUX * COLUMNAS;
+    //1300;
+    private int ALTO_CANVAS = (CASILLA_AUX * FILAS) - 300;
+    //600
+    private int CASILLA_TAMANIO = Math.min(ANCHO_CANVAS / COLUMNAS, ALTO_CANVAS / FILAS);
+    private int CASILLA_ANCHO = CASILLA_TAMANIO;
+    //ANCHO_CANVAS / COLUMNAS;
+    private int CASILLA_ALTO = CASILLA_TAMANIO;
+    //ALTO_VENTANA / FILAS;
+     */
 
-    private Sistema sistema;
-
+    private Sistema sistema = new Sistema();
 
     @Override
     public void start(Stage stage) {
 
-        this.sistema = new Sistema();
+        Tablero tablero = new Tablero(ANCHO_VENTANA, ALTO_VENTANA, ANCHO_CANVAS, ALTO_CANVAS, FILAS, COLUMNAS, CASILLA_ANCHO, CASILLA_ALTO);
 
-        VBox titulo_stats = inicializar_textos();;
+        VBox root = new VBox();
+        Scene scene = new Scene(root, ANCHO_VENTANA, ALTO_VENTANA, Color.BLACK);
 
+        HBox casilla_superior = new HBox();
+        casilla_superior.setPrefHeight(TAMANIO_MENUES);
+        casilla_superior.setStyle("-fx-background-color: SLATEGRAY;");
+        casilla_superior.setAlignment(Pos.CENTER);
+        VBox titulo_stats = inicializar_textos();
+
+        Canvas canvas = tablero.ActualizarTablero(sistema.estadoJuego(),TAMANIO_MENUES);
+
+        HBox casilla_inferior = new HBox(5);
+        casilla_inferior.setPrefHeight(TAMANIO_MENUES);
+        casilla_inferior.setStyle("-fx-background-color: SLATEGRAY;");
+        casilla_inferior.setAlignment(Pos.CENTER);
         Boton[] botones = inicializar_botones();
         Boton boton_tp_aleatorio = botones[0]; Boton boton_tp = botones[1]; Boton boton_no_moverser = botones[2];
 
-        StackPane root = new StackPane();
-        StackPane pane = new StackPane();
-        Scene scene = new Scene(root, ANCHO_VENTANA, ALTO_VENTANA, Color.BLACK);
-        Canvas casilla_superior = new Canvas(ANCHO_CANVAS, 150);
-        Canvas casilla_inferior = new Canvas(ANCHO_CANVAS, 150);
-        Tablero tablero = new Tablero(ANCHO_VENTANA, ALTO_VENTANA, ANCHO_CANVAS, ALTO_CANVAS, FILAS, COLUMNAS, CASILLA_ANCHO, CASILLA_ALTO);
-
-        Canvas canvas = tablero.ActualizarTablero(sistema.estadoJuego());
         boton_tp.setOnAction(boton_tp.ActivarEvento());
         boton_tp_aleatorio.setOnAction((boton_tp_aleatorio.ActivarEvento()));
         boton_no_moverser.setOnAction((boton_no_moverser.ActivarEvento()));
 
+        casilla_superior.getChildren().add(titulo_stats);
+        casilla_inferior.getChildren().addAll(boton_tp, boton_tp_aleatorio, boton_no_moverser);
+        root.getChildren().addAll(casilla_superior, canvas, casilla_inferior);
+
         scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            int[] coordenadas = new int[]{(int) mouseEvent.getX() / CASILLA_ANCHO, (int) mouseEvent.getY() / CASILLA_ALTO};
+            int[] coordenadas = new int[]{((int) mouseEvent.getY() - TAMANIO_MENUES + CASILLA_TAMANIO) / CASILLA_ALTO, (int) mouseEvent.getX() / CASILLA_ANCHO};
             sistema.jugarTurno(coordenadas);
-            tablero.ActualizarTablero(sistema.estadoJuego());
+            System.out.println(coordenadas[0]);
+            System.out.println(coordenadas[1]);
+            start(stage);
         });
 
-
-        posicionar_interfaz(canvas, casilla_superior, casilla_inferior, boton_tp, boton_tp_aleatorio, boton_no_moverser, titulo_stats);
-        GraphicsContext barra_superior = casilla_superior.getGraphicsContext2D();
-        GraphicsContext barra_inferior = casilla_inferior.getGraphicsContext2D();
-        barra_superior.setFill(Color.SLATEGRAY);
-        barra_inferior.setFill(Color.SLATEGRAY);
-        barra_superior.fillRoundRect(0, 0, ANCHO_CANVAS, 150, 40, 40);
-        barra_inferior.fillRoundRect(0, 50, ANCHO_CANVAS, 150, 40, 40);
-
-        root.getChildren().add(pane);
-        pane.getChildren().addAll(canvas, casilla_superior, casilla_inferior, boton_tp_aleatorio, boton_tp, boton_no_moverser, titulo_stats);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
-
-
     public static void main(String[] args) {
         Application.launch();
-    }
-
-
-    private static void posicionar_interfaz(Canvas canvas, Canvas casilla_superior, Canvas casilla_inferior, Button tp_seguro, Button tp_aleatorio, Button no_moverse, VBox titulo_stats) {
-        StackPane.setAlignment(canvas, Pos.CENTER);
-        StackPane.setAlignment(casilla_superior, Pos.TOP_CENTER);
-        StackPane.setAlignment(casilla_inferior, Pos.BOTTOM_CENTER);
-        StackPane.setAlignment(tp_seguro, Pos.BOTTOM_LEFT);
-        StackPane.setAlignment(tp_aleatorio, Pos.BOTTOM_CENTER);
-        StackPane.setAlignment(no_moverse, Pos.BOTTOM_RIGHT);
-
-        titulo_stats.setAlignment(Pos.TOP_CENTER);
-        titulo_stats.setPadding(new Insets(25, 0, 0, 0));
-        titulo_stats.setSpacing(10);
     }
 
     private static VBox inicializar_textos() {
@@ -114,6 +114,9 @@ public class App extends Application {
         stats.setFont(Font.font("Arial", FontWeight.THIN, 25));
 
         VBox titulo_stats = new VBox();
+        titulo_stats.setAlignment(Pos.TOP_CENTER);
+        titulo_stats.setPadding(new Insets(25, 0, 0, 0));
+        titulo_stats.setSpacing(10);
         titulo_stats.getChildren().addAll(titulo, stats);
 
         return titulo_stats;
@@ -136,9 +139,9 @@ public class App extends Application {
             public void handle(ActionEvent event) {
             }
         };
-        Boton tp_aleatorio = new Boton("TP ALEATORIO",evento_tp_aleatorio,430,150);
-        Boton tp_seguro = new Boton("TP SEGURO", evento_tp_seguro,430,150);
-        Boton no_moverse = new Boton("NO MOVERSE",evento_no_moverse,430,150);
+        Boton tp_aleatorio = new Boton("TP ALEATORIO",evento_tp_aleatorio,ANCHO_VENTANA / 3,140); //430 , 150
+        Boton tp_seguro = new Boton("TP SEGURO", evento_tp_seguro,ANCHO_VENTANA / 3,140);
+        Boton no_moverse = new Boton("NO MOVERSE",evento_no_moverse,ANCHO_VENTANA / 3,140);
         return new Boton[]{tp_aleatorio, tp_seguro, no_moverse};
     }
 }
