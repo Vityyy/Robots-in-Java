@@ -49,18 +49,17 @@ public class Tablero {
         }
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font("Arial", 20));
-        gc.fillText("X", (posicion_jugador[0] * casilla_alto)+Tamanios_Menues-casilla_alto, posicion_jugador[1] * casillas_ancho);
+        gc.fillText("X", posicion_jugador[1] * casilla_alto, posicion_jugador[0] * casillas_ancho);
 
         for (Enemigo enemigo : posiciones_robots.keySet()){
             var coordenadas_robot = posiciones_robots.get(enemigo);
             if (enemigo.getFuncional() && (enemigo.getClass().getName().equals("logica.RobotSimple"))){
-                gc.fillText("S",coordenadas_robot[0] * casillas_ancho,coordenadas_robot[1] * casilla_alto);
+                gc.fillText("S",coordenadas_robot[1] * casillas_ancho,coordenadas_robot[0] * casilla_alto);
             }else if (enemigo.getFuncional() && (enemigo.getClass().getName().equals("logica.RobotComplejo"))){
-                gc.fillText("C",coordenadas_robot[0] * casillas_ancho,coordenadas_robot[1] * casilla_alto);
-            }else{
-                gc.fillText("M",coordenadas_robot[0] * casillas_ancho,coordenadas_robot[1] * casilla_alto);
+                gc.fillText("C",coordenadas_robot[1] * casillas_ancho,coordenadas_robot[0] * casilla_alto);
+            }else if (!enemigo.getFuncional())
+                gc.fillText("M",coordenadas_robot[1] * casillas_ancho,coordenadas_robot[0] * casilla_alto);
             }
-        }
         return canvas;
     }
 }

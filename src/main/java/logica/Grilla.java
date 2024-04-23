@@ -1,15 +1,12 @@
 package logica;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Grilla{
     private final int n_filas;
     private final int n_columnas;
     private int[] coordenadas_jugador;
-    private Map<Enemigo, int[]> posiciones = new HashMap<Enemigo, int[]>();
+    private Map<Enemigo, int[]> posiciones = new HashMap<>();
     public Grilla(int n_filas, int n_columnas, Enemigo[] enemigos) {
         this.n_filas = n_filas;
         this.n_columnas = n_columnas;
@@ -17,7 +14,7 @@ public class Grilla{
         inicializarGrilla(enemigos);
     }
     private void inicializarGrilla(Enemigo[] enemigos){
-        Set<int[]> set = new HashSet<int[]>();
+        Set<int[]> set = new HashSet<>();
         set.add(this.coordenadas_jugador);
         for (Enemigo enemigo : enemigos) {
             int[] posicion = new int[]{(int) (Math.random() * n_filas), (int) (Math.random() * n_columnas)};
@@ -32,21 +29,23 @@ public class Grilla{
         }
     }
     public boolean actualizarGrilla(){
-        Map<Enemigo, int[]> nuevas_posiciones = new HashMap<Enemigo, int[]>();
-        Map<int[], Enemigo> posibles_colisiones = new HashMap<int[], Enemigo>();
+        Map<Enemigo, int[]> nuevas_posiciones = new HashMap<>();
+        Map<String, Enemigo> posibles_colisiones = new HashMap<>();
 
         for(Enemigo enemigo : this.posiciones.keySet()){
             int[] posicion_nueva = enemigo.moverse(this);
+            String key_posicion_nueva = Arrays.toString(posicion_nueva);
 
-            if (this.coordenadas_jugador == posicion_nueva){
+            if (this.coordenadas_jugador[0] == posicion_nueva[0] && this.coordenadas_jugador[1] == posicion_nueva[1]){
+                this.posiciones = nuevas_posiciones;
                 return true;
             }
-            if (posibles_colisiones.containsKey(posicion_nueva)){
+            if (posibles_colisiones.containsKey(key_posicion_nueva)){
                 enemigo.setNoFuncional();
-                posibles_colisiones.get(posicion_nueva).setNoFuncional();
+                posibles_colisiones.get(key_posicion_nueva).setNoFuncional();
             }
-            nuevas_posiciones.put(enemigo,posicion_nueva);
-            posibles_colisiones.put(posicion_nueva, enemigo);
+            nuevas_posiciones.put(enemigo, posicion_nueva);
+            posibles_colisiones.put(key_posicion_nueva, enemigo);
         }
         this.posiciones = nuevas_posiciones;
         return false;

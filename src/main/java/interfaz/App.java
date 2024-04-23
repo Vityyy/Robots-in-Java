@@ -18,10 +18,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.*;
 import javafx.scene.paint.*;
 import javafx.scene.canvas.*;
+import javafx.stage.StageStyle;
 import logica.Sistema;
 
 import java.util.ArrayList;
@@ -31,6 +33,14 @@ import java.util.ArrayList;
  * JavaFX App
  */
 public class App extends Application {
+    private boolean juego_terminado = false;
+    private static String NOMBRE_JUEGO = "Robots";
+    private static String BOTON_ALEATORIO = "Teleport Randomly";
+    private static String BOTON_SEGURO = "Teleport Safely";
+    private static String BOTON_ESPERAR = "Wait";
+    private static String TEXTO_FIN = "GAME OVER";
+    private static String BOTON_REINICIAR = "Reiniciar";
+    private static String BOTON_SALIR = "Salir";
     private static int TAMANIO_MENUES = 150;
     private static int ALTO_VENTANA = 900;
     private static int FILAS = 40;
@@ -56,13 +66,20 @@ public class App extends Application {
     private int CASILLA_ALTO = CASILLA_TAMANIO;
     //ALTO_VENTANA / FILAS;
      */
-
     private Sistema sistema = new Sistema();
+    private Stage stage;
+    private boolean tp_seguro_activado = false;
+
 
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
 
         Tablero tablero = new Tablero(ANCHO_VENTANA, ALTO_VENTANA, ANCHO_CANVAS, ALTO_CANVAS, FILAS, COLUMNAS, CASILLA_ANCHO, CASILLA_ALTO);
+
+        int nivel = sistema.getNivel();
+        int score = sistema.getScore();
+        int tps_seguros = sistema.getTpsSeguros();
 
         VBox root = new VBox();
         Scene scene = new Scene(root, ANCHO_VENTANA, ALTO_VENTANA, Color.BLACK);
@@ -71,7 +88,7 @@ public class App extends Application {
         casilla_superior.setPrefHeight(TAMANIO_MENUES);
         casilla_superior.setStyle("-fx-background-color: SLATEGRAY;");
         casilla_superior.setAlignment(Pos.CENTER);
-        VBox titulo_stats = inicializar_textos();
+        VBox titulo_stats = inicializar_textos(nivel, score);
 
         Canvas canvas = tablero.ActualizarTablero(sistema.estadoJuego(),TAMANIO_MENUES);
 
@@ -79,7 +96,7 @@ public class App extends Application {
         casilla_inferior.setPrefHeight(TAMANIO_MENUES);
         casilla_inferior.setStyle("-fx-background-color: SLATEGRAY;");
         casilla_inferior.setAlignment(Pos.CENTER);
-        Boton[] botones = inicializar_botones();
+        Boton[] botones = inicializar_botones(tps_seguros);
         Boton boton_tp_aleatorio = botones[0]; Boton boton_tp = botones[1]; Boton boton_no_moverser = botones[2];
 
         boton_tp.setOnAction(boton_tp.ActivarEvento());
@@ -87,28 +104,36 @@ public class App extends Application {
         boton_no_moverser.setOnAction((boton_no_moverser.ActivarEvento()));
 
         casilla_superior.getChildren().add(titulo_stats);
-        casilla_inferior.getChildren().addAll(boton_tp, boton_tp_aleatorio, boton_no_moverser);
+        casilla_inferior.getChildren().addAll(boton_tp_aleatorio, boton_tp, boton_no_moverser);
         root.getChildren().addAll(casilla_superior, canvas, casilla_inferior);
 
         scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
             int[] coordenadas = new int[]{((int) mouseEvent.getY() - TAMANIO_MENUES + CASILLA_TAMANIO) / CASILLA_ALTO, (int) mouseEvent.getX() / CASILLA_ANCHO};
-            sistema.jugarTurno(coordenadas);
-            System.out.println(coordenadas[0]);
-            System.out.println(coordenadas[1]);
+            if (tp_seguro_activado){
+                juego_terminado = sistema.JugarTpSeguro(coordenadas);
+                tp_seguro_activado = false;
+            }else{
+                juego_terminado = sistema.jugarTurno(coordenadas);
+            }
             start(stage);
         });
 
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+
+
+        if (juego_terminado) {
+            finalizar_juego(sistema.getNivel(), sistema.getScore());
+        }
     }
     public static void main(String[] args) {
         Application.launch();
     }
 
-    private static VBox inicializar_textos() {
-        Text titulo = new Text("Robots");
-        Text stats = new Text("Level: pene vs Score: vagina");
+    private static VBox inicializar_textos(int nivel, int score) {
+        Text titulo = new Text(NOMBRE_JUEGO);
+        Text stats = new Text(String.format("Level: %d | Score: %d", nivel, score));
         stats.setFill(Color.LIGHTGRAY);
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 25));
         stats.setFont(Font.font("Arial", FontWeight.THIN, 25));
@@ -122,26 +147,99 @@ public class App extends Application {
         return titulo_stats;
     }
 
-    private static Boton[] inicializar_botones() {
-        EventHandler<ActionEvent> evento_tp_aleatorio = new EventHandler<ActionEvent>() {
+    private Boton[] inicializar_botones(int tps_seguros) {
+        EventHandler<ActionEvent> evento_tp_aleatorio = new EventHandler<>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("TOCASTE BOTON ALEATORIO");
+                juego_terminado = sistema.jugarTpAleatorio();
+                start(stage);
             }
         };
-        EventHandler<ActionEvent> evento_tp_seguro = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> evento_tp_seguro = new EventHandler<>() {
             @Override
             public void handle(ActionEvent event) {
+                if (sistema.getTpsSeguros() > 0) {
+                    tp_seguro_activado = true;
+                }
             }
         };
-        EventHandler<ActionEvent> evento_no_moverse = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> evento_no_moverse = new EventHandler<>() {
             @Override
             public void handle(ActionEvent event) {
+                juego_terminado = sistema.jugarTurno(new int[]{-1,-1});
+                start(stage);
             }
         };
-        Boton tp_aleatorio = new Boton("TP ALEATORIO",evento_tp_aleatorio,ANCHO_VENTANA / 3,140); //430 , 150
-        Boton tp_seguro = new Boton("TP SEGURO", evento_tp_seguro,ANCHO_VENTANA / 3,140);
-        Boton no_moverse = new Boton("NO MOVERSE",evento_no_moverse,ANCHO_VENTANA / 3,140);
+
+        Boton tp_aleatorio = new Boton(BOTON_ALEATORIO, evento_tp_aleatorio,ANCHO_VENTANA / 3,140);
+        Boton tp_seguro = new Boton(String.format("%s: %d", BOTON_SEGURO, tps_seguros), evento_tp_seguro,ANCHO_VENTANA / 3,140);
+        Boton no_moverse = new Boton(BOTON_ESPERAR, evento_no_moverse,ANCHO_VENTANA / 3,140);
         return new Boton[]{tp_aleatorio, tp_seguro, no_moverse};
+    }
+
+
+    private VBox textos_fin(Text mensaje_top, Text mensaje_bot) {
+        mensaje_top.setFill(Color.BLACK);
+        mensaje_top.setFont(Font.font("Arial", FontWeight.BOLD, 25));
+        mensaje_bot.setFont(Font.font("Arial", FontWeight.THIN, 15));
+
+        VBox mensajes = new VBox();
+        mensajes.setAlignment(Pos.TOP_CENTER);
+        mensajes.setPadding(new Insets(25, 0, 0, 0));
+        mensajes.setSpacing(10);
+        mensajes.getChildren().addAll(mensaje_top, mensaje_bot);
+
+        return mensajes;
+    }
+
+    private void finalizar_juego(int nivel, int score) {
+        Stage popup = new Stage();
+        popup.initModality(Modality.APPLICATION_MODAL);
+        popup.initStyle(StageStyle.UNDECORATED);
+
+        VBox popupRoot = new VBox();
+        popupRoot.setAlignment(Pos.CENTER);
+        HBox popupBotones = new HBox();
+        popupBotones.setAlignment(Pos.BOTTOM_CENTER);
+        popupBotones.setSpacing(10);
+
+        EventHandler<ActionEvent> evento_reiniciar = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                sistema = new Sistema();
+                juego_terminado = false;
+                start(stage);
+                popup.close();
+            }
+        };
+        EventHandler<ActionEvent> evento_salir = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.exit(0);
+            }
+        };
+
+        Text game_over = new Text(TEXTO_FIN);
+        Text mensaje = new Text(String.format("Level: %d | Score: %d", nivel, score));
+
+        Boton boton_1 = new Boton(BOTON_REINICIAR, evento_reiniciar, 100, 50);
+        Boton boton_2 = new Boton(BOTON_SALIR, evento_salir, 100, 50);
+
+        VBox textos = textos_fin(game_over, mensaje);
+        popupRoot.getChildren().addAll(popupBotones, textos);
+
+        boton_1.setOnAction(boton_1.ActivarEvento());
+        boton_2.setOnAction(boton_2.ActivarEvento());
+
+        popupRoot.setStyle("-fx-background-color: linear-gradient(to bottom, #f2f2f2, #a6a6a6);" +
+                "-fx-border-width: 2px; -fx-border-color: black;" +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 0);");
+
+        Scene popupScene = new Scene(popupRoot, 400, 200);
+        popup.setScene(popupScene);
+
+        popupBotones.getChildren().addAll(boton_1, boton_2);
+        popup.setOnCloseRequest(event -> event.consume());
+        popup.showAndWait();
     }
 }

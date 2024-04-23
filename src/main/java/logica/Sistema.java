@@ -9,16 +9,16 @@ import java.util.Map;
 public class Sistema {
     private final int n_fil = 40;
     private final int n_col = 40;
-    private Jugador jugador;
+    private final Jugador jugador;
     private Enemigo[] enemigos;
     private int nivel;
     private int Score;
-    private int tpsSeguros;
-    private Grilla grilla;
+    private int tps_seguros;
+    private final Grilla grilla;
 
     public Sistema() {
         this.Score = 0;
-        this.tpsSeguros = 2;
+        this.tps_seguros = 2;
         this.nivel = 1;
         this.jugador = new Jugador();
         crearEnemigos(nivel);
@@ -40,24 +40,39 @@ public class Sistema {
         }
         this.enemigos = enemigos;
     }
-
-    public void jugarTurno(int[] coordenadas){
+    public boolean jugarTurno(int[] coordenadas){
         this.jugador.moverse(coordenadas, this.grilla);
-        boolean juego_terminado = this.grilla.actualizarGrilla();
-        if (juego_terminado){
-            finalizarPartida();
-        }
+        return this.grilla.actualizarGrilla();
     }
-
+    public boolean jugarTpAleatorio(){
+        int[] coordenadas = new int[]{(int) (Math.random() * n_fil) ,(int) (Math.random() *n_col)};
+        this.grilla.setPosicionJugador(coordenadas);
+        return jugarTurno(new int[]{-1,-1});
+    }
+    public boolean JugarTpSeguro(int[] coordenadas){
+        grilla.setPosicionJugador(coordenadas);
+        tps_seguros-=1;
+        return jugarTurno(new int[]{-1,-1});
+    }
     public ArrayList<Object> estadoJuego(){
         Map<Enemigo, int[]> posiciones_enemigos = this.grilla.getPosicionesEnemigos();
         int[] posicion_jugador = this.grilla.getPosicionJugador();
-        ArrayList<Object> resultado = new ArrayList<Object>();
+        ArrayList<Object> resultado = new ArrayList<>();
         resultado.add(posicion_jugador);
         resultado.add(posiciones_enemigos);
         return resultado;
     }
 
-    private void finalizarPartida() {
+    public int getNivel() {
+        return nivel;
+    }
+
+    public int getScore() {
+        return Score;
+    }
+
+    public int getTpsSeguros() {
+        return tps_seguros;
     }
 }
+
