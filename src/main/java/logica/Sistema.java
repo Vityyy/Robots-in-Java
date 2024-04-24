@@ -7,28 +7,25 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Sistema {
-    private final int n_fil = 40;
-    private final int n_col = 40;
+    private final int n_fil = 15;
+    private final int n_col = 15;
     private final Jugador jugador;
-    private Enemigo[] enemigos;
     private int nivel;
-    private int Score;
+    private int score;
     private int tps_seguros;
     private final Grilla grilla;
 
-    public Sistema() {
-        this.Score = 0;
+    public Sistema(int score,int nivel) {
+        this.score = score;
         this.tps_seguros = 2;
-        this.nivel = 1;
+        this.nivel = nivel;
         this.jugador = new Jugador();
-        crearEnemigos(nivel);
-        this.grilla = new Grilla(n_fil, n_col, this.enemigos);
+        this.grilla = new Grilla(n_fil, n_col,crearEnemigos(nivel));
     }
-
-    private void crearEnemigos(int nivel) {
-        int maxEnemigos = (this.n_fil * this.n_col * nivel) / 40;
+    private Enemigo[] crearEnemigos(int nivel) {
+        int maxEnemigos = (this.n_fil * this.n_col * nivel) / 60;
         Enemigo[] enemigos = new Enemigo[maxEnemigos];
-        int cantSimples = (maxEnemigos * 3) / 4;
+        int cantSimples = (maxEnemigos * 2) / 4;
 
         for(int i = 0; i < cantSimples; i++) {
             var enemigo = new RobotSimple();
@@ -38,20 +35,20 @@ public class Sistema {
             var enemigo = new RobotComplejo();
             enemigos[j] = enemigo;
         }
-        this.enemigos = enemigos;
+        return enemigos;
     }
     public boolean jugarTurno(int[] coordenadas){
         this.jugador.moverse(coordenadas, this.grilla);
-        return this.grilla.actualizarGrilla();
+        return this.grilla.actualizarGrilla(this);
     }
     public boolean jugarTpAleatorio(){
-        int[] coordenadas = new int[]{(int) (Math.random() * n_fil) ,(int) (Math.random() *n_col)};
+        int[] coordenadas = new int[]{(int) (Math.random() * n_fil-1) ,(int) (Math.random() *n_col-1)};
         this.grilla.setPosicionJugador(coordenadas);
         return jugarTurno(new int[]{-1,-1});
     }
     public boolean JugarTpSeguro(int[] coordenadas){
         grilla.setPosicionJugador(coordenadas);
-        tps_seguros-=1;
+        tps_seguros -= 1;
         return jugarTurno(new int[]{-1,-1});
     }
     public ArrayList<Object> estadoJuego(){
@@ -62,17 +59,26 @@ public class Sistema {
         resultado.add(posiciones_enemigos);
         return resultado;
     }
-
+    public boolean juegoGanado(){
+        var posiciones_enemigos = this.grilla.getPosicionesEnemigos();
+        for (Enemigo enemigo : posiciones_enemigos.keySet()){
+            if (enemigo.getFuncional()){
+                return false;
+            }
+        }
+        return true;
+    }
     public int getNivel() {
         return nivel;
     }
-
     public int getScore() {
-        return Score;
+        return score;
     }
-
     public int getTpsSeguros() {
         return tps_seguros;
+    }
+    public void setScore(int score_plus) {
+        this.score += score_plus;
     }
 }
 

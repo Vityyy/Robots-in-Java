@@ -3,6 +3,7 @@ package logica;
 import java.util.*;
 
 public class Grilla{
+    private int PUNTOS_POR_COLSION = 20;
     private final int n_filas;
     private final int n_columnas;
     private int[] coordenadas_jugador;
@@ -20,15 +21,15 @@ public class Grilla{
             int[] posicion = new int[]{(int) (Math.random() * n_filas), (int) (Math.random() * n_columnas)};
 
             while (set.contains(posicion)) {
-                posicion[0] = (int) (Math.random() * n_filas);
-                posicion[1] = (int) (Math.random() * n_columnas);
+                posicion[0] = (int) (Math.random() * (n_filas-1));
+                posicion[1] = (int) (Math.random() * (n_columnas-1));
                 }
 
             set.add(posicion);
             this.posiciones.put(enemigo,posicion);
         }
     }
-    public boolean actualizarGrilla(){
+    public boolean actualizarGrilla(Sistema sistema){
         Map<Enemigo, int[]> nuevas_posiciones = new HashMap<>();
         Map<String, Enemigo> posibles_colisiones = new HashMap<>();
 
@@ -43,6 +44,7 @@ public class Grilla{
             if (posibles_colisiones.containsKey(key_posicion_nueva)){
                 enemigo.setNoFuncional();
                 posibles_colisiones.get(key_posicion_nueva).setNoFuncional();
+                sistema.setScore(PUNTOS_POR_COLSION);
             }
             nuevas_posiciones.put(enemigo, posicion_nueva);
             posibles_colisiones.put(key_posicion_nueva, enemigo);
@@ -55,9 +57,7 @@ public class Grilla{
         return this.posiciones.get(enemigo);
     }
     public Map<Enemigo, int[]> getPosicionesEnemigos() {return this.posiciones;}
-    public void setPosicionJugador(int[] coordenadas){
-        this.coordenadas_jugador = coordenadas;
-    }
+    public void setPosicionJugador(int[] coordenadas){this.coordenadas_jugador = coordenadas;}
     public int[] getPosicionJugador() {
         return this.coordenadas_jugador;
     }

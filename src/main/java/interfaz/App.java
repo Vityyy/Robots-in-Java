@@ -43,8 +43,8 @@ public class App extends Application {
     private static String BOTON_SALIR = "Salir";
     private static int TAMANIO_MENUES = 150;
     private static int ALTO_VENTANA = 900;
-    private static int FILAS = 40;
-    private static int COLUMNAS = 40;
+    private static int FILAS = 15;
+    private static int COLUMNAS = 15;
     private static int CASILLA_TAMANIO = (ALTO_VENTANA - TAMANIO_MENUES * 2) / FILAS;
     private static int CASILLA_ANCHO = CASILLA_TAMANIO;
     private static int CASILLA_ALTO = CASILLA_TAMANIO;
@@ -66,10 +66,9 @@ public class App extends Application {
     private int CASILLA_ALTO = CASILLA_TAMANIO;
     //ALTO_VENTANA / FILAS;
      */
-    private Sistema sistema = new Sistema();
+    private Sistema sistema = new Sistema(0,1);
     private Stage stage;
     private boolean tp_seguro_activado = false;
-
 
     @Override
     public void start(Stage stage) {
@@ -86,7 +85,7 @@ public class App extends Application {
 
         HBox casilla_superior = new HBox();
         casilla_superior.setPrefHeight(TAMANIO_MENUES);
-        casilla_superior.setStyle("-fx-background-color: SLATEGRAY;");
+        casilla_superior.setStyle("-fx-background-color: PERU; -fx-border-color: black; -fx-border-width: 2;");
         casilla_superior.setAlignment(Pos.CENTER);
         VBox titulo_stats = inicializar_textos(nivel, score);
 
@@ -94,7 +93,7 @@ public class App extends Application {
 
         HBox casilla_inferior = new HBox(5);
         casilla_inferior.setPrefHeight(TAMANIO_MENUES);
-        casilla_inferior.setStyle("-fx-background-color: SLATEGRAY;");
+        casilla_inferior.setStyle("-fx-background-color: PERU; -fx-border-color: black; -fx-border-width: 1;");
         casilla_inferior.setAlignment(Pos.CENTER);
         Boton[] botones = inicializar_botones(tps_seguros);
         Boton boton_tp_aleatorio = botones[0]; Boton boton_tp = botones[1]; Boton boton_no_moverser = botones[2];
@@ -108,7 +107,7 @@ public class App extends Application {
         root.getChildren().addAll(casilla_superior, canvas, casilla_inferior);
 
         scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            int[] coordenadas = new int[]{((int) mouseEvent.getY() - TAMANIO_MENUES + CASILLA_TAMANIO) / CASILLA_ALTO, (int) mouseEvent.getX() / CASILLA_ANCHO};
+            int[] coordenadas = new int[]{((int) mouseEvent.getY() - TAMANIO_MENUES) / CASILLA_ALTO, (int) mouseEvent.getX() / CASILLA_ANCHO};
             if (tp_seguro_activado){
                 juego_terminado = sistema.JugarTpSeguro(coordenadas);
                 tp_seguro_activado = false;
@@ -122,11 +121,19 @@ public class App extends Application {
         stage.setResizable(false);
         stage.show();
 
-
+        if (sistema.juegoGanado()){
+            inicializarSiguienteNivel();
+            start(stage);
+        }
         if (juego_terminado) {
             finalizar_juego(sistema.getNivel(), sistema.getScore());
         }
     }
+
+    private void inicializarSiguienteNivel() {
+        sistema = new Sistema(sistema.getScore(),sistema.getNivel()+1);
+    }
+
     public static void main(String[] args) {
         Application.launch();
     }
@@ -134,7 +141,7 @@ public class App extends Application {
     private static VBox inicializar_textos(int nivel, int score) {
         Text titulo = new Text(NOMBRE_JUEGO);
         Text stats = new Text(String.format("Level: %d | Score: %d", nivel, score));
-        stats.setFill(Color.LIGHTGRAY);
+        stats.setFill(Color.WHEAT);
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 25));
         stats.setFont(Font.font("Arial", FontWeight.THIN, 25));
 
@@ -148,35 +155,24 @@ public class App extends Application {
     }
 
     private Boton[] inicializar_botones(int tps_seguros) {
-        EventHandler<ActionEvent> evento_tp_aleatorio = new EventHandler<>() {
-            @Override
-            public void handle(ActionEvent event) {
-                juego_terminado = sistema.jugarTpAleatorio();
-                start(stage);
+        EventHandler<ActionEvent> evento_tp_aleatorio = event -> {
+            juego_terminado = sistema.jugarTpAleatorio();
+            start(stage);
+        };
+        EventHandler<ActionEvent> evento_tp_seguro = event -> {
+            if (sistema.getTpsSeguros() > 0) {
+                tp_seguro_activado = true;
             }
         };
-        EventHandler<ActionEvent> evento_tp_seguro = new EventHandler<>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (sistema.getTpsSeguros() > 0) {
-                    tp_seguro_activado = true;
-                }
-            }
+        EventHandler<ActionEvent> evento_no_moverse = event -> {
+            juego_terminado = sistema.jugarTurno(new int[]{-1,-1});
+            start(stage);
         };
-        EventHandler<ActionEvent> evento_no_moverse = new EventHandler<>() {
-            @Override
-            public void handle(ActionEvent event) {
-                juego_terminado = sistema.jugarTurno(new int[]{-1,-1});
-                start(stage);
-            }
-        };
-
         Boton tp_aleatorio = new Boton(BOTON_ALEATORIO, evento_tp_aleatorio,ANCHO_VENTANA / 3,140);
         Boton tp_seguro = new Boton(String.format("%s: %d", BOTON_SEGURO, tps_seguros), evento_tp_seguro,ANCHO_VENTANA / 3,140);
         Boton no_moverse = new Boton(BOTON_ESPERAR, evento_no_moverse,ANCHO_VENTANA / 3,140);
         return new Boton[]{tp_aleatorio, tp_seguro, no_moverse};
     }
-
 
     private VBox textos_fin(Text mensaje_top, Text mensaje_bot) {
         mensaje_top.setFill(Color.BLACK);
@@ -206,7 +202,7 @@ public class App extends Application {
         EventHandler<ActionEvent> evento_reiniciar = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                sistema = new Sistema();
+                sistema = new Sistema(0,1);
                 juego_terminado = false;
                 start(stage);
                 popup.close();
