@@ -3,7 +3,7 @@ package logica;
 import java.util.*;
 
 public class Grilla{
-    private int PUNTOS_POR_COLSION = 20;
+    private final int PUNTOS_POR_COLSION = 20;
     private final int n_filas;
     private final int n_columnas;
     private int[] coordenadas_jugador;
@@ -32,33 +32,36 @@ public class Grilla{
     public boolean actualizarGrilla(Sistema sistema){
         Map<Enemigo, int[]> nuevas_posiciones = new HashMap<>();
         Map<String, Enemigo> posibles_colisiones = new HashMap<>();
+        boolean end_game = false;
 
         for(Enemigo enemigo : this.posiciones.keySet()){
             int[] posicion_nueva = enemigo.moverse(this);
             String key_posicion_nueva = Arrays.toString(posicion_nueva);
 
             if (this.coordenadas_jugador[0] == posicion_nueva[0] && this.coordenadas_jugador[1] == posicion_nueva[1]){
-                this.posiciones = nuevas_posiciones;
-                return true;
+                sistema.setJugadorNoVivo();
+                end_game = true;
             }
             if (posibles_colisiones.containsKey(key_posicion_nueva)){
-                enemigo.setNoFuncional();
-                posibles_colisiones.get(key_posicion_nueva).setNoFuncional();
-                sistema.setScore(PUNTOS_POR_COLSION);
+                if (enemigo.getFuncional()) {
+                    sistema.aumentarScore(PUNTOS_POR_COLSION);
+                    enemigo.setNoFuncional();
+                }
+                if (posibles_colisiones.get(key_posicion_nueva).getFuncional()) {
+                    posibles_colisiones.get(key_posicion_nueva).setNoFuncional();
+                    sistema.aumentarScore(PUNTOS_POR_COLSION);
+                }
+
             }
             nuevas_posiciones.put(enemigo, posicion_nueva);
             posibles_colisiones.put(key_posicion_nueva, enemigo);
         }
         this.posiciones = nuevas_posiciones;
-        return false;
+        return end_game;
     }
 
-    public int[] getPosicionEnemigo(Enemigo enemigo) {
-        return this.posiciones.get(enemigo);
-    }
+    public int[] getPosicionEnemigo(Enemigo enemigo) {return this.posiciones.get(enemigo);}
     public Map<Enemigo, int[]> getPosicionesEnemigos() {return this.posiciones;}
     public void setPosicionJugador(int[] coordenadas){this.coordenadas_jugador = coordenadas;}
-    public int[] getPosicionJugador() {
-        return this.coordenadas_jugador;
-    }
+    public int[] getPosicionJugador() {return this.coordenadas_jugador;}
 }

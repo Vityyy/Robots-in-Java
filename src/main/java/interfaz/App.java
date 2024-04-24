@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -34,13 +35,13 @@ import java.util.ArrayList;
  */
 public class App extends Application {
     private boolean juego_terminado = false;
-    private static String NOMBRE_JUEGO = "Robots";
-    private static String BOTON_ALEATORIO = "Teleport Randomly";
-    private static String BOTON_SEGURO = "Teleport Safely";
-    private static String BOTON_ESPERAR = "Wait";
-    private static String TEXTO_FIN = "GAME OVER";
-    private static String BOTON_REINICIAR = "Reiniciar";
-    private static String BOTON_SALIR = "Salir";
+    private final static String NOMBRE_JUEGO = "Robots";
+    private final static String BOTON_ALEATORIO = "Teleport Randomly";
+    private final static String BOTON_SEGURO = "Teleport Safely";
+    private final static String BOTON_ESPERAR = "Wait";
+    private final static String TEXTO_FIN = "GAME OVER";
+    private final static String BOTON_REINICIAR = "Reiniciar";
+    private final static String BOTON_SALIR = "Salir";
     private static int TAMANIO_MENUES = 150;
     private static int ALTO_VENTANA = 900;
     private static int FILAS = 15;
@@ -89,7 +90,10 @@ public class App extends Application {
         casilla_superior.setAlignment(Pos.CENTER);
         VBox titulo_stats = inicializar_textos(nivel, score);
 
+        StackPane lienzo_canvas = new StackPane();
         Canvas canvas = tablero.ActualizarTablero(sistema.estadoJuego(),TAMANIO_MENUES);
+        lienzo_canvas.getChildren().add(canvas);
+        lienzo_canvas.setAlignment(Pos.CENTER);
 
         HBox casilla_inferior = new HBox(5);
         casilla_inferior.setPrefHeight(TAMANIO_MENUES);
@@ -104,7 +108,11 @@ public class App extends Application {
 
         casilla_superior.getChildren().add(titulo_stats);
         casilla_inferior.getChildren().addAll(boton_tp_aleatorio, boton_tp, boton_no_moverser);
-        root.getChildren().addAll(casilla_superior, canvas, casilla_inferior);
+        root.getChildren().addAll(casilla_superior, lienzo_canvas, casilla_inferior);
+
+        scene.setOnKeyPressed(keyEvent -> {
+            String codigo_marcado = keyEvent.getCharacter();
+        });
 
         scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
             int[] coordenadas = new int[]{((int) mouseEvent.getY() - TAMANIO_MENUES) / CASILLA_ALTO, (int) mouseEvent.getX() / CASILLA_ANCHO};
@@ -121,7 +129,7 @@ public class App extends Application {
         stage.setResizable(false);
         stage.show();
 
-        if (sistema.juegoGanado()){
+        if (sistema.juegoGanado() && sistema.jugadorEstaVivo()){
             inicializarSiguienteNivel();
             start(stage);
         }
@@ -131,7 +139,7 @@ public class App extends Application {
     }
 
     private void inicializarSiguienteNivel() {
-        sistema = new Sistema(sistema.getScore(),sistema.getNivel()+1);
+        sistema = new Sistema(sistema.getScore(),sistema.getNivel() + 1);
     }
 
     public static void main(String[] args) {

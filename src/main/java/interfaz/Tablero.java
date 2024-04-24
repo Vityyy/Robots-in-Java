@@ -53,19 +53,20 @@ public class Tablero {
         Image sprite_jugador = new Image("file:src/main/resources/rayman.png");
         gc.drawImage(sprite_jugador, posicion_jugador[1] * casilla_alto, posicion_jugador[0] * casilla_ancho, casilla_ancho, casilla_alto);
 
-        //Image sprite_simple = new Image("file:src/main/resources/sans.png");
+        Image sprite_simple = new Image("file:src/main/resources/rotom.png");
         Image sprite_complejo = new Image("file:src/main/resources/sans.png");
+        Image sprite_colision = new Image("file:src/main/resources/fuego.png");
 
         for (Enemigo enemigo : posiciones_robots.keySet()){
             var coordenadas_robot = posiciones_robots.get(enemigo);
             if (enemigo.getFuncional() && (enemigo.getClass().getName().equals("logica.RobotSimple"))){
-                gc.fillText("S",coordenadas_robot[1] * casilla_alto,coordenadas_robot[0] * casilla_alto);
+                gc.drawImage(sprite_simple, coordenadas_robot[1] * casilla_alto, coordenadas_robot[0] * casilla_ancho, casilla_ancho, casilla_alto);
 
             }else if (enemigo.getFuncional() && (enemigo.getClass().getName().equals("logica.RobotComplejo"))){
                  gc.drawImage(sprite_complejo, coordenadas_robot[1] * casilla_alto, coordenadas_robot[0] * casilla_ancho, casilla_ancho, casilla_alto);
 
             }else if (!enemigo.getFuncional())
-                gc.fillText("M",coordenadas_robot[1] * casilla_alto,(coordenadas_robot[0] * casilla_alto)+Tamanios_Menues);
+                gc.drawImage(sprite_colision, coordenadas_robot[1] * casilla_alto, coordenadas_robot[0] * casilla_ancho, casilla_ancho, casilla_alto);
             }
         return canvas;
     }

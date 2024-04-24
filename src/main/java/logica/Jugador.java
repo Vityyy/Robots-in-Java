@@ -1,6 +1,8 @@
 package logica;
 
 public class Jugador {
+    private Boolean vivo = true;
+
     public void moverse(int[] coordenadas, Grilla Grilla) {
         if (coordenadas[0] == -1){
             return;
@@ -11,4 +13,7 @@ public class Jugador {
         nueva_posicion[1] += Integer.compare(coordenadas[1], posicion_actual[1]);
         Grilla.setPosicionJugador(nueva_posicion);
     }
+
+    public Boolean getVivo() {return vivo;}
+    public void setNoVivo() {this.vivo = false;}
 }

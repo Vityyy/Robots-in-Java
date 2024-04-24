@@ -77,7 +77,9 @@ public class Sistema {
     public int getTpsSeguros() {
         return tps_seguros;
     }
-    public void setScore(int score_plus) {
+    public boolean jugadorEstaVivo() {return jugador.getVivo();}
+    public void setJugadorNoVivo() {jugador.setNoVivo();}
+    public void aumentarScore(int score_plus) {
         this.score += score_plus;
     }
 }
