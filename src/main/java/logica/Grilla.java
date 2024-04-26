@@ -1,9 +1,7 @@
 package logica;
-
 import java.util.*;
-
 public class Grilla{
-    private final int PUNTOS_POR_COLSION = 20;
+    final static int PUNTOS_POR_COLSION = 20;
     private final int n_filas;
     private final int n_columnas;
     private int[] coordenadas_jugador;

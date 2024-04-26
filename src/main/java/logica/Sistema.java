@@ -1,31 +1,29 @@
 package logica;
 
-
-//HACER CONSTANTES LOS NÚMEROS DE MIERDA
-
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 public class Sistema {
-    private final int n_fil = 5;
-    private final int n_col = 5;
+    private int n_fil;
+    private int n_col;
     private final Jugador jugador;
     private final int nivel;
     private int score;
     private int tps_seguros;
     private final Grilla grilla;
 
-    public Sistema(int score,int nivel) {
+    public Sistema(int score, int nivel, int filas, int columnas) {
         this.score = score;
         this.tps_seguros = 2;
         this.nivel = nivel;
+        this.n_fil = filas;
+        this.n_col = columnas;
         this.jugador = new Jugador();
         this.grilla = new Grilla(n_fil, n_col,crearEnemigos(nivel));
     }
     private Enemigo[] crearEnemigos(int nivel) {
         int maxEnemigos = (this.n_fil * this.n_col * nivel) / 60;
         if (maxEnemigos < 2) {
-            maxEnemigos = 2;
+            maxEnemigos = 1 + nivel;
         }
         Enemigo[] enemigos = new Enemigo[maxEnemigos];
         int cantSimples = (maxEnemigos * 2) / 4;
@@ -83,5 +81,9 @@ public class Sistema {
     public void setJugadorNoVivo() {jugador.setNoVivo();}
     public int[] getPosicionJugador(){return grilla.getPosicionJugador();}
     public void aumentarScore(int score_plus) {this.score += score_plus;}
+    public int[] getDimension(){
+        return new int[]{n_fil,n_col};
+    }
+
 }
 

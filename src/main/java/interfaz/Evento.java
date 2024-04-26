@@ -1,7 +1,7 @@
 package interfaz;
 
+import javafx.scene.control.TextField;
 import logica.Sistema;
-
 import java.util.HashMap;
 
 public class Evento {
@@ -50,9 +50,22 @@ public class Evento {
             tp_accionado = true;
         }
     }
-    public boolean botonTpAleatorioActivado(Sistema sistema){
-        return sistema.jugarTpAleatorio();}
+    public boolean botonTpAleatorioActivado(Sistema sistema){return sistema.jugarTpAleatorio();}
     public boolean botonNoMoverseActivado(Sistema sistema) {
         return sistema.jugarTurno(sistema.getPosicionJugador());
+    }
+    public Sistema RedimensionarJuego(Sistema sistema, String filasInput, String columnasInput) {
+        if (filasInput == null || columnasInput==null)
+            return sistema;
+        try{
+            int filas = Integer.parseInt(filasInput);
+            int columnas = Integer.parseInt(columnasInput);
+            if (filas>=4 && columnas>=4) {
+                return new Sistema(0,1,filas,columnas);
+            }
+        }catch(NumberFormatException nfe){
+            return sistema;
+        }
+        return sistema;
     }
 }
