@@ -48,7 +48,6 @@ public class App extends Application {
     private Sistema sistema = new Sistema(0,1,FILAS,COLUMNAS);
     private Stage stage;
     private final Evento Evento = new Evento();
-
     @Override
     public void start(Stage stage) {
         this.stage = stage;
