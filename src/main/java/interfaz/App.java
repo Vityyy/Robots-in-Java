@@ -197,11 +197,7 @@ public class App extends Application {
             String nuevas_filas = filas_input.getText();
             String nuevas_columnas = columnas_input.getText();
             sistema = Evento.RedimensionarJuego(sistema, nuevas_filas, nuevas_columnas);
-            FILAS = sistema.getDimension()[0]; COLUMNAS = sistema.getDimension()[1];
-            CASILLA_TAMANIO = (ALTO_VENTANA - TAMANIO_MENUES * 2) / FILAS;
-            ANCHO_VENTANA = CASILLA_TAMANIO * COLUMNAS;
-            ANCHO_CANVAS = ANCHO_VENTANA;
-            ALTO_CANVAS = CASILLA_TAMANIO * FILAS;
+            redimensionarConstantes();
             start(stage);
             popup.close();
         });
@@ -213,6 +209,13 @@ public class App extends Application {
         popup.setScene(popupScene);
         popup.setOnCloseRequest(Event::consume);
         popup.showAndWait();
+    }
+    private void redimensionarConstantes(){
+        FILAS = sistema.getDimension()[0]; COLUMNAS = sistema.getDimension()[1];
+        CASILLA_TAMANIO = (ALTO_VENTANA - TAMANIO_MENUES * 2) / FILAS;
+        ANCHO_VENTANA = CASILLA_TAMANIO * COLUMNAS;
+        ANCHO_CANVAS = ANCHO_VENTANA;
+        ALTO_CANVAS = CASILLA_TAMANIO * FILAS;
     }
     private void finalizar_juego(int nivel, int score) {
         Object[] popups = creacion_popup();
