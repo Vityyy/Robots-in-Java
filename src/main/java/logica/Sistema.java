@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Sistema {
-    private final int n_fil = 15;
-    private final int n_col = 15;
+    private final int n_fil = 5;
+    private final int n_col = 5;
     private final Jugador jugador;
-    private int nivel;
+    private final int nivel;
     private int score;
     private int tps_seguros;
     private final Grilla grilla;
@@ -24,9 +24,11 @@ public class Sistema {
     }
     private Enemigo[] crearEnemigos(int nivel) {
         int maxEnemigos = (this.n_fil * this.n_col * nivel) / 60;
+        if (maxEnemigos < 2) {
+            maxEnemigos = 2;
+        }
         Enemigo[] enemigos = new Enemigo[maxEnemigos];
         int cantSimples = (maxEnemigos * 2) / 4;
-
         for(int i = 0; i < cantSimples; i++) {
             var enemigo = new RobotSimple();
             enemigos[i] = enemigo;
@@ -42,14 +44,14 @@ public class Sistema {
         return this.grilla.actualizarGrilla(this);
     }
     public boolean jugarTpAleatorio(){
-        int[] coordenadas = new int[]{(int) (Math.random() * n_fil-1) ,(int) (Math.random() *n_col-1)};
+        int[] coordenadas = new int[]{(int) (Math.random() * (n_fil-1)) ,(int) (Math.random() *(n_col-1))};
         this.grilla.setPosicionJugador(coordenadas);
-        return jugarTurno(new int[]{-1,-1});
+        return jugarTurno(grilla.getPosicionJugador());
     }
     public boolean JugarTpSeguro(int[] coordenadas){
         grilla.setPosicionJugador(coordenadas);
         tps_seguros -= 1;
-        return jugarTurno(new int[]{-1,-1});
+        return jugarTurno(grilla.getPosicionJugador());
     }
     public ArrayList<Object> estadoJuego(){
         Map<Enemigo, int[]> posiciones_enemigos = this.grilla.getPosicionesEnemigos();
@@ -79,8 +81,7 @@ public class Sistema {
     }
     public boolean jugadorEstaVivo() {return jugador.getVivo();}
     public void setJugadorNoVivo() {jugador.setNoVivo();}
-    public void aumentarScore(int score_plus) {
-        this.score += score_plus;
-    }
+    public int[] getPosicionJugador(){return grilla.getPosicionJugador();}
+    public void aumentarScore(int score_plus) {this.score += score_plus;}
 }
 
