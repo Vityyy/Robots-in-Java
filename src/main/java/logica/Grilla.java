@@ -33,14 +33,11 @@ public class Grilla{
         boolean end_game = false;
 
         for(Enemigo enemigo : this.posiciones.keySet()){
+            int[] posicion_anterior = getPosicionEnemigo(enemigo);
             int[] posicion_nueva = enemigo.moverse(this);
             String key_posicion_nueva = Arrays.toString(posicion_nueva);
-
-            if (this.coordenadas_jugador[0] == posicion_nueva[0] && this.coordenadas_jugador[1] == posicion_nueva[1]){
-                sistema.setJugadorNoVivo();
-                end_game = true;
-            }
-            if (posibles_colisiones.containsKey(key_posicion_nueva)){
+            
+            if (posibles_colisiones.containsKey(key_posicion_nueva)) {
                 if (enemigo.getFuncional()) {
                     sistema.aumentarScore(PUNTOS_POR_COLSION);
                     enemigo.setNoFuncional();
@@ -52,6 +49,11 @@ public class Grilla{
             }
             nuevas_posiciones.put(enemigo, posicion_nueva);
             posibles_colisiones.put(key_posicion_nueva, enemigo);
+
+            if (this.coordenadas_jugador[0] == posicion_nueva[0] && this.coordenadas_jugador[1] == posicion_nueva[1]){
+                sistema.setJugadorNoVivo();
+                end_game = true;
+            }
         }
         this.posiciones = nuevas_posiciones;
         return end_game;

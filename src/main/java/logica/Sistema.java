@@ -3,6 +3,7 @@ package logica;
 import java.util.*;
 
 public class Sistema {
+    private static final int TPS_INICIALES = 2;
     private int n_fil;
     private int n_col;
     private final Jugador jugador;
@@ -13,7 +14,16 @@ public class Sistema {
 
     public Sistema(int score, int nivel, int filas, int columnas) {
         this.score = score;
-        this.tps_seguros = 2;
+        this.tps_seguros = TPS_INICIALES;
+        this.nivel = nivel;
+        this.n_fil = filas;
+        this.n_col = columnas;
+        this.jugador = new Jugador();
+        this.grilla = new Grilla(n_fil, n_col,crearEnemigos(nivel));
+    }
+    public Sistema(int score, int nivel, int filas, int columnas, int tps_seguros) {
+        this.score = score;
+        this.tps_seguros = tps_seguros;
         this.nivel = nivel;
         this.n_fil = filas;
         this.n_col = columnas;
@@ -38,8 +48,11 @@ public class Sistema {
         return enemigos;
     }
     public boolean jugarTurno(int[] coordenadas){
-        this.jugador.moverse(coordenadas, this.grilla);
-        return this.grilla.actualizarGrilla(this);
+        if (coordenadas[0]>=0 && coordenadas[0] < n_fil && coordenadas[1] >= 0 && coordenadas[1] < n_col) {
+            this.jugador.moverse(coordenadas, this.grilla);
+            return this.grilla.actualizarGrilla(this);
+        }
+        return false;
     }
     public boolean jugarTpAleatorio(){
         int[] coordenadas = new int[]{(int) (Math.random() * (n_fil-1)) ,(int) (Math.random() *(n_col-1))};
@@ -81,6 +94,7 @@ public class Sistema {
     public void setJugadorNoVivo() {jugador.setNoVivo();}
     public int[] getPosicionJugador(){return grilla.getPosicionJugador();}
     public void aumentarScore(int score_plus) {this.score += score_plus;}
+    public void aumentarTpsSeguros() {this.tps_seguros += 1;}
     public int[] getDimension(){
         return new int[]{n_fil,n_col};
     }

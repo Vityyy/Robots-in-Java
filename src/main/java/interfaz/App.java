@@ -39,8 +39,8 @@ public class App extends Application {
     private final static String BOTON_SALIR = "Salir";
     private final static int TAMANIO_MENUES = 150;
     private final static int ALTO_VENTANA = 900;
-    private static int FILAS = 6;
-    private static int COLUMNAS = 6;
+    private static int FILAS = 15;
+    private static int COLUMNAS = 15;
     private int CASILLA_TAMANIO = (ALTO_VENTANA - TAMANIO_MENUES * 2) / FILAS;
     private int ANCHO_VENTANA = CASILLA_TAMANIO * COLUMNAS;
     private int ANCHO_CANVAS = ANCHO_VENTANA;
@@ -117,7 +117,8 @@ public class App extends Application {
         }
     }
     private void inicializarSiguienteNivel() {
-        sistema = new Sistema(sistema.getScore(),sistema.getNivel() + 1,FILAS,COLUMNAS);
+        sistema = new Sistema(sistema.getScore(),sistema.getNivel() + 1,FILAS,COLUMNAS, sistema.getTpsSeguros());
+        sistema.aumentarTpsSeguros();
     }
 
     private void popup_tamanio() {
