@@ -154,6 +154,7 @@ public class App extends Application {
         popup.setOnCloseRequest(Event::consume);
         popup.showAndWait();
     }
+    
     private void redimensionarConstantes(){
         FILAS = sistema.getDimension()[0]; COLUMNAS = sistema.getDimension()[1];
         CASILLA_TAMANIO = (ALTO_VENTANA - TAMANIO_MENUES * 2) / FILAS;
