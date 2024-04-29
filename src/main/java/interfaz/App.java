@@ -21,6 +21,7 @@ import logica.Sistema;
 /**
  * JavaFX App
  */
+
 public class App extends Application {
     private boolean juego_terminado = false;
     private final static String NOMBRE_JUEGO = "Robots";
@@ -48,6 +49,7 @@ public class App extends Application {
     private Sistema sistema = new Sistema(0,1,FILAS,COLUMNAS);
     private Stage stage;
     private final Evento Evento = new Evento();
+
     @Override
     public void start(Stage stage) {
         this.stage = stage;
@@ -71,6 +73,7 @@ public class App extends Application {
         Boton[] botones = Setup.inicializar_botones(tps_seguros, BOTON_ALEATORIO, BOTON_SEGURO, BOTON_ESPERAR, BOTON_TAMANIO, ANCHO_VENTANA);
         Boton boton_tp_aleatorio = botones[0]; Boton boton_tp = botones[1]; Boton boton_no_moverser = botones[2]; Boton boton_tamanio = botones[3];
 
+        //Inicio de sección de Eventos
         boton_tp_aleatorio.setOnAction( _ -> {
             juego_terminado = Evento.botonTpAleatorioActivado(sistema);
             start(stage);
@@ -97,6 +100,7 @@ public class App extends Application {
                 start(stage);
             }
         });
+        //Fin de sección de eventos
 
         tamanioBox.getChildren().add(boton_tamanio);
         tamanioBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -154,7 +158,7 @@ public class App extends Application {
         popup.setOnCloseRequest(Event::consume);
         popup.showAndWait();
     }
-    
+
     private void redimensionarConstantes(){
         FILAS = sistema.getDimension()[0]; COLUMNAS = sistema.getDimension()[1];
         CASILLA_TAMANIO = (ALTO_VENTANA - TAMANIO_MENUES * 2) / FILAS;

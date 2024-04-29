@@ -1,5 +1,9 @@
 package logica;
 
+/**
+ * Clase que modela un robot simple
+ */
+
 public class RobotSimple implements Enemigo{
     private boolean funcional = true;
     public int[] moverse(Grilla grilla) {

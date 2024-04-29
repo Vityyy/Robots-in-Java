@@ -14,6 +14,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * Clase que modela gran parte de la interfaz gráfica del juego
+ */
+
 public class Setup {
     private Setup() {
     }

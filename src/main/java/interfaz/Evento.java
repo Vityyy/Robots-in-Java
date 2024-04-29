@@ -3,7 +3,9 @@ package interfaz;
 import javafx.scene.control.TextField;
 import logica.Sistema;
 import java.util.HashMap;
-
+/**
+* Clase que se encarga de responder a cada tipo de evento
+ */
 public class Evento {
     private HashMap<String, int[]> mapeoMovimiento;
     private final static String TECLA_TP_ALEATORIO = "O";

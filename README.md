@@ -9,6 +9,10 @@ El objetivo de este trabajo práctico es implementar el videojuego Robots, que e
 1. SASSONE IRRAZABAL, Camilo - 111135
 2. COLINA, Andrés Eduardo - 110680
 
+### ACLARACIÓN:
+Modificar a gusto la resolución vertical de la ventana antes de inciar el juego.
+Cambiar la constante ALTO_VENTANA en la clase App.
+
 ### Reglas de juego
 
 

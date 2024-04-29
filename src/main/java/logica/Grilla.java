@@ -1,11 +1,20 @@
 package logica;
 import java.util.*;
+
+/**
+ * Clase que modela la grilla del juego y la maneja de diversas formas
+ */
+
 public class Grilla{
-    final static int PUNTOS_POR_COLSION = 20;
+    private final static int PUNTOS_POR_COLISION = 20;
     private final int n_filas;
     private final int n_columnas;
     private int[] coordenadas_jugador;
     private Map<Enemigo, int[]> posiciones = new HashMap<>();
+
+    /**
+     * Constructor
+     */
     public Grilla(int n_filas, int n_columnas, Enemigo[] enemigos) {
         this.n_filas = n_filas;
         this.n_columnas = n_columnas;
@@ -13,6 +22,11 @@ public class Grilla{
         inicializarGrilla(enemigos);
     }
 
+    /**
+     * Inicializa la grilla con las posiciones de los enemigos.
+     * Asegura que no terminen en la misma posicion
+     * @param enemigos lista de enemigos creados
+     */
     private void inicializarGrilla(Enemigo[] enemigos){
         Set<String> set = new HashSet<>();
         String posicion_jugador = Arrays.toString(coordenadas_jugador);
@@ -28,6 +42,13 @@ public class Grilla{
             this.posiciones.put(enemigo,posicion);
         }
     }
+
+    /**
+     * Actualiza el estado actual de juego según el movimiento del jugador
+     * Trata los casos de colisiones y actualiza el score
+     * @param sistema se usa para actualizar el score
+     * @return boolean
+     */
     public boolean actualizarGrilla(Sistema sistema){
         Map<Enemigo, int[]> nuevas_posiciones = new HashMap<>();
         Map<String, Enemigo> posibles_colisiones = new HashMap<>();
@@ -39,12 +60,12 @@ public class Grilla{
 
             if (posibles_colisiones.containsKey(key_posicion_nueva)) {
                 if (enemigo.getFuncional()) {
-                    sistema.aumentarScore(PUNTOS_POR_COLSION);
+                    sistema.aumentarScore(PUNTOS_POR_COLISION);
                     enemigo.setNoFuncional();
                 }
                 if (posibles_colisiones.get(key_posicion_nueva).getFuncional()) {
                     posibles_colisiones.get(key_posicion_nueva).setNoFuncional();
-                    sistema.aumentarScore(PUNTOS_POR_COLSION);
+                    sistema.aumentarScore(PUNTOS_POR_COLISION);
                 }
             }
             nuevas_posiciones.put(enemigo, posicion_nueva);
@@ -58,6 +79,7 @@ public class Grilla{
         this.posiciones = nuevas_posiciones;
         return end_game;
     }
+
     public int[] getPosicionEnemigo(Enemigo enemigo) {return this.posiciones.get(enemigo);}
     public Map<Enemigo, int[]> getPosicionesEnemigos() {return this.posiciones;}
     public void setPosicionJugador(int[] coordenadas){this.coordenadas_jugador = coordenadas;}
