@@ -31,8 +31,9 @@ public class Evento {
         if (mapeoMovimiento.containsKey(tecla)){
             var movimiento = mapeoMovimiento.get(tecla);
             var coor_jugador = sistema.getPosicionJugador();
-            var coordenadas = new int[]{coor_jugador[0]+movimiento[0],coor_jugador[1]+movimiento[1]};
+            var coordenadas = new int[]{coor_jugador[0] + movimiento[0], coor_jugador[1] + movimiento[1]};
             return sistema.jugarTurno(coordenadas);
+
         } else if (tecla.equals(TECLA_TP_ALEATORIO)){
             return sistema.jugarTpAleatorio();
         } else if (tecla.equals(TECLA_TP_SEGURO)){

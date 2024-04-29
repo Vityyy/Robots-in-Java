@@ -42,7 +42,7 @@ public class Setup {
         Boton tp_aleatorio = new Boton(STR."\{BOTON_ALEATORIO} (O)",ANCHO_VENTANA / 3,140);
         Boton tp_seguro = new Boton(String.format("%s: %d (P)", BOTON_SEGURO, tps_seguros),ANCHO_VENTANA / 3,140);
         Boton no_moverse = new Boton(STR. "\{BOTON_ESPERAR} (S)",ANCHO_VENTANA / 3,140);
-        Boton tamanio = new Boton(STR."\{BOTON_TAMANIO} (O)",ANCHO_VENTANA / 8,40);
+        Boton tamanio = new Boton(STR."\{BOTON_TAMANIO} (T)",ANCHO_VENTANA / 8,40);
         return new Boton[]{tp_aleatorio, tp_seguro, no_moverse, tamanio};
     }
 

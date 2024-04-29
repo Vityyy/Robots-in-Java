@@ -38,6 +38,7 @@ public class App extends Application {
     private final static String TEXTO_FIN = "GAME OVER";
     private final static String BOTON_REINICIAR = "Reiniciar";
     private final static String BOTON_SALIR = "Salir";
+    private final static String POPUP_DIMENSION  = "T";
     private final static int TAMANIO_MENUES = 150;
     private final static int ALTO_VENTANA = 900;
     private static int FILAS = 20;
@@ -90,8 +91,13 @@ public class App extends Application {
             start(stage);
         });
         scene.setOnKeyPressed(keyEvent -> {
-            juego_terminado = Evento.teclaAccionada(sistema,keyEvent.getCode().toString());
-            start(stage);
+            if(keyEvent.getCode().toString().equals(POPUP_DIMENSION)){
+                popup_tamanio();
+                start(stage);
+            }else {
+                juego_terminado = Evento.teclaAccionada(sistema, keyEvent.getCode().toString());
+                start(stage);
+            }
         });
         scene.setOnMouseClicked((MouseEvent mouseEvent) -> {
             if (mouseEvent.getY() >= TAMANIO_MENUES && mouseEvent.getY() <= ALTO_CANVAS + TAMANIO_MENUES) {
