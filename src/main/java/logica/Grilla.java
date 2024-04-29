@@ -12,6 +12,7 @@ public class Grilla{
         this.coordenadas_jugador = new int[]{n_filas/2, n_columnas/2};
         inicializarGrilla(enemigos);
     }
+
     private void inicializarGrilla(Enemigo[] enemigos){
         Set<String> set = new HashSet<>();
         String posicion_jugador = Arrays.toString(coordenadas_jugador);
@@ -33,10 +34,9 @@ public class Grilla{
         boolean end_game = false;
 
         for(Enemigo enemigo : this.posiciones.keySet()){
-            int[] posicion_anterior = getPosicionEnemigo(enemigo);
             int[] posicion_nueva = enemigo.moverse(this);
             String key_posicion_nueva = Arrays.toString(posicion_nueva);
-            
+
             if (posibles_colisiones.containsKey(key_posicion_nueva)) {
                 if (enemigo.getFuncional()) {
                     sistema.aumentarScore(PUNTOS_POR_COLSION);
