@@ -39,8 +39,8 @@ public class App extends Application {
     private final static String BOTON_SALIR = "Salir";
     private final static int TAMANIO_MENUES = 150;
     private final static int ALTO_VENTANA = 900;
-    private static int FILAS = 15;
-    private static int COLUMNAS = 15;
+    private static int FILAS = 20;
+    private static int COLUMNAS = 40;
     private int CASILLA_TAMANIO = (ALTO_VENTANA - TAMANIO_MENUES * 2) / FILAS;
     private int ANCHO_VENTANA = CASILLA_TAMANIO * COLUMNAS;
     private int ANCHO_CANVAS = ANCHO_VENTANA;
