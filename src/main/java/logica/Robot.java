@@ -19,7 +19,7 @@ public class Robot {
         nueva_posicion[0] += Integer.compare(coordenadas_jugador[0], this.posicion_actual[0]);
         nueva_posicion[1] += Integer.compare(coordenadas_jugador[1], this.posicion_actual[1]);
 
-        posicion_actual = nueva_posicion;
+        this.posicion_actual = nueva_posicion;
 
         return nueva_posicion;
     }
