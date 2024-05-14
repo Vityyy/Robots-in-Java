@@ -26,8 +26,9 @@ public class Sistema {
         this.n_fil = filas;
         this.n_col = columnas;
         this.jugador = new Jugador();
-        this.grilla = new Grilla(n_fil, n_col,crearRobots(nivel));
+        this.grilla = new Grilla(n_fil, n_col, CreadorDeRobots.crearRobots(nivel, n_fil, n_col));
     }
+
     /**
      * Constructor
      */
@@ -38,31 +39,9 @@ public class Sistema {
         this.n_fil = filas;
         this.n_col = columnas;
         this.jugador = new Jugador();
-        this.grilla = new Grilla(n_fil, n_col,crearRobots(nivel));
+        this.grilla = new Grilla(n_fil, n_col, CreadorDeRobots.crearRobots(nivel, n_fil, n_col));
     }
 
-    /**
-     * Inicializa los robots del juego según el nivel en el que se encuentra el jugador.
-     * @param nivel nivel actual
-     * @return Robot[]
-     */
-    private Robot[] crearRobots(int nivel) {
-        int maxRobots = (this.n_fil * this.n_col * nivel) / 60;
-        if (maxRobots < 2) {
-            maxRobots = 1 + nivel;
-        }
-        Robot[] robots = new Robot[maxRobots];
-        int cantSimples = (maxRobots * 2) / 4;
-        for(int i = 0; i < cantSimples; i++) {
-            var robot = new Robot();
-            robots[i] = robot;
-        }
-        for(int j = cantSimples; j< maxRobots; j++) {
-            var robot = new RobotComplejo();
-            robots[j] = robot;
-        }
-        return robots;
-    }
     /**
      * Permite al jugador moverse por la Grilla.
      * @param coordenadas posicion a moverse
@@ -134,4 +113,3 @@ public class Sistema {
     public void aumentarTpsSeguros() {this.tps_seguros += 1;}
     public int[] getDimension(){return new int[]{n_fil,n_col};}
 }
-
