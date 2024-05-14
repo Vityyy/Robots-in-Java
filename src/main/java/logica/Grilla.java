@@ -10,36 +10,37 @@ public class Grilla{
     private final int n_filas;
     private final int n_columnas;
     private int[] coordenadas_jugador;
-    private Map<Enemigo, int[]> posiciones = new HashMap<>();
+    private Map<Robot, int[]> posiciones = new HashMap<>();
 
     /**
      * Constructor
      */
-    public Grilla(int n_filas, int n_columnas, Enemigo[] enemigos) {
+    public Grilla(int n_filas, int n_columnas, Robot[] robots) {
         this.n_filas = n_filas;
         this.n_columnas = n_columnas;
         this.coordenadas_jugador = new int[]{n_filas/2, n_columnas/2};
-        inicializarGrilla(enemigos);
+        inicializarGrilla(robots);
     }
 
     /**
-     * Inicializa la grilla con las posiciones de los enemigos.
+     * Inicializa la grilla con las posiciones de los robots.
      * Asegura que no terminen en la misma posicion
-     * @param enemigos lista de enemigos creados
+     * @param robots lista de robots creados
      */
-    private void inicializarGrilla(Enemigo[] enemigos){
+    private void inicializarGrilla(Robot[] robots){
         Set<String> set = new HashSet<>();
         String posicion_jugador = Arrays.toString(coordenadas_jugador);
         set.add(posicion_jugador);
-        for (Enemigo enemigo : enemigos) {
-            int[] posicion = new int[]{(int) (Math.random() * (n_filas-1)), (int) (Math.random() * (n_columnas-1))};
+        for (Robot robot : robots) {
+            int[] posicion = robot.spawn(n_filas, n_columnas);
             String posicion_robot = Arrays.toString(posicion);
+
             while (set.contains(posicion_robot)) {
-                posicion[0] = (int) (Math.random() * (n_filas-1));
-                posicion[1] = (int) (Math.random() * (n_columnas-1));
-                }
+                posicion = robot.spawn(n_filas, n_columnas);
+                posicion_robot = Arrays.toString(posicion);
+            }
             set.add(posicion_robot);
-            this.posiciones.put(enemigo,posicion);
+            this.posiciones.put(robot,posicion);
         }
     }
 
@@ -50,26 +51,26 @@ public class Grilla{
      * @return boolean
      */
     public boolean actualizarGrilla(Sistema sistema){
-        Map<Enemigo, int[]> nuevas_posiciones = new HashMap<>();
-        Map<String, Enemigo> posibles_colisiones = new HashMap<>();
+        Map<Robot, int[]> nuevas_posiciones = new HashMap<>();
+        Map<String, Robot> posibles_colisiones = new HashMap<>();
         boolean end_game = false;
 
-        for(Enemigo enemigo : this.posiciones.keySet()){
-            int[] posicion_nueva = enemigo.moverse(this);
+        for(Robot robot : this.posiciones.keySet()){
+            int[] posicion_nueva = robot.moverse(this.coordenadas_jugador);
             String key_posicion_nueva = Arrays.toString(posicion_nueva);
 
             if (posibles_colisiones.containsKey(key_posicion_nueva)) {
-                if (enemigo.getFuncional()) {
+                if (robot.getFuncional()) {
                     sistema.aumentarScore(PUNTOS_POR_COLISION);
-                    enemigo.setNoFuncional();
+                    robot.setNoFuncional();
                 }
                 if (posibles_colisiones.get(key_posicion_nueva).getFuncional()) {
                     posibles_colisiones.get(key_posicion_nueva).setNoFuncional();
                     sistema.aumentarScore(PUNTOS_POR_COLISION);
                 }
             }
-            nuevas_posiciones.put(enemigo, posicion_nueva);
-            posibles_colisiones.put(key_posicion_nueva, enemigo);
+            nuevas_posiciones.put(robot, posicion_nueva);
+            posibles_colisiones.put(key_posicion_nueva, robot);
 
             if (this.coordenadas_jugador[0] == posicion_nueva[0] && this.coordenadas_jugador[1] == posicion_nueva[1]){
                 sistema.setJugadorNoVivo();
@@ -79,9 +80,7 @@ public class Grilla{
         this.posiciones = nuevas_posiciones;
         return end_game;
     }
-
-    public int[] getPosicionEnemigo(Enemigo enemigo) {return this.posiciones.get(enemigo);}
-    public Map<Enemigo, int[]> getPosicionesEnemigos() {return this.posiciones;}
+    public Map<Robot, int[]> getPosicionesRobots() {return this.posiciones;}
     public void setPosicionJugador(int[] coordenadas){this.coordenadas_jugador = coordenadas;}
     public int[] getPosicionJugador() {return this.coordenadas_jugador;}
 }

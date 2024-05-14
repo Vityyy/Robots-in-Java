@@ -4,7 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import logica.Enemigo;
+import logica.Robot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class Tablero {
         Canvas canvas = new Canvas(ancho_canvas, alto_canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         var posicion_jugador = (int[]) estado_juego.get(0);
-        var posiciones_robots = (HashMap<Enemigo,int[]>) estado_juego.get(1);
+        var posiciones_robots = (HashMap<Robot,int[]>) estado_juego.get(1);
 
         for (int x = 0; x < filas; x++) {
             for (int y = 0; y < columnas; y++) {
@@ -50,15 +50,15 @@ public class Tablero {
         Image sprite_complejo = new Image(DIRECCION_COMPLEJO);
         Image sprite_colision = new Image(DIRECCION_COLISION);
 
-        for (Enemigo enemigo : posiciones_robots.keySet()){
-            var coordenadas_robot = posiciones_robots.get(enemigo);
-            if (enemigo.getFuncional() && (enemigo.getClass().getName().equals("logica.RobotSimple"))){
+        for (Robot robot : posiciones_robots.keySet()){
+            var coordenadas_robot = posiciones_robots.get(robot);
+            if (robot.getFuncional() && (robot.getClass().getName().equals("logica.RobotComplejo"))){
+                gc.drawImage(sprite_complejo, coordenadas_robot[1] * tamanio_casilla, coordenadas_robot[0] * tamanio_casilla, tamanio_casilla, tamanio_casilla);
+
+            }else if (robot.getFuncional() && (robot.getClass().getName().equals("logica.Robot"))){
                 gc.drawImage(sprite_simple, coordenadas_robot[1] * tamanio_casilla, coordenadas_robot[0] * tamanio_casilla, tamanio_casilla, tamanio_casilla);
 
-            }else if (enemigo.getFuncional() && (enemigo.getClass().getName().equals("logica.RobotComplejo"))){
-                 gc.drawImage(sprite_complejo, coordenadas_robot[1] * tamanio_casilla, coordenadas_robot[0] * tamanio_casilla, tamanio_casilla, tamanio_casilla);
-
-            }else if (!enemigo.getFuncional())
+            }else if (!robot.getFuncional())
                 gc.drawImage(sprite_colision, coordenadas_robot[1] * tamanio_casilla, coordenadas_robot[0] * tamanio_casilla, tamanio_casilla, tamanio_casilla);
             }
         return canvas;

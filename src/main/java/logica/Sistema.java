@@ -8,8 +8,8 @@ import java.util.*;
 
 public class Sistema {
     private static final int TPS_INICIALES = 2;
-    private int n_fil;
-    private int n_col;
+    private final int n_fil;
+    private final int n_col;
     private final Jugador jugador;
     private final int nivel;
     private int score;
@@ -26,7 +26,7 @@ public class Sistema {
         this.n_fil = filas;
         this.n_col = columnas;
         this.jugador = new Jugador();
-        this.grilla = new Grilla(n_fil, n_col,crearEnemigos(nivel));
+        this.grilla = new Grilla(n_fil, n_col,crearRobots(nivel));
     }
     /**
      * Constructor
@@ -38,30 +38,30 @@ public class Sistema {
         this.n_fil = filas;
         this.n_col = columnas;
         this.jugador = new Jugador();
-        this.grilla = new Grilla(n_fil, n_col,crearEnemigos(nivel));
+        this.grilla = new Grilla(n_fil, n_col,crearRobots(nivel));
     }
 
     /**
-     * Inicializa los enemigos del juego según el nivel en el que se encuentra el jugador.
+     * Inicializa los robots del juego según el nivel en el que se encuentra el jugador.
      * @param nivel nivel actual
-     * @return Enemigo[]
+     * @return Robot[]
      */
-    private Enemigo[] crearEnemigos(int nivel) {
-        int maxEnemigos = (this.n_fil * this.n_col * nivel) / 60;
-        if (maxEnemigos < 2) {
-            maxEnemigos = 1 + nivel;
+    private Robot[] crearRobots(int nivel) {
+        int maxRobots = (this.n_fil * this.n_col * nivel) / 60;
+        if (maxRobots < 2) {
+            maxRobots = 1 + nivel;
         }
-        Enemigo[] enemigos = new Enemigo[maxEnemigos];
-        int cantSimples = (maxEnemigos * 2) / 4;
+        Robot[] robots = new Robot[maxRobots];
+        int cantSimples = (maxRobots * 2) / 4;
         for(int i = 0; i < cantSimples; i++) {
-            var enemigo = new RobotSimple();
-            enemigos[i] = enemigo;
+            var robot = new Robot();
+            robots[i] = robot;
         }
-        for(int j = cantSimples; j< maxEnemigos; j++) {
-            var enemigo = new RobotComplejo();
-            enemigos[j] = enemigo;
+        for(int j = cantSimples; j< maxRobots; j++) {
+            var robot = new RobotComplejo();
+            robots[j] = robot;
         }
-        return enemigos;
+        return robots;
     }
     /**
      * Permite al jugador moverse por la Grilla.
@@ -98,26 +98,26 @@ public class Sistema {
     }
 
     /**
-     * Actualiza las posiciones de los enemigos y del jugador y las devuelve
+     * Actualiza las posiciones de los robots y del jugador y las devuelve
      * @return ArrayList</Object>
      */
     public ArrayList<Object> estadoJuego(){
-        Map<Enemigo, int[]> posiciones_enemigos = this.grilla.getPosicionesEnemigos();
+        Map<Robot, int[]> posiciones_robots = this.grilla.getPosicionesRobots();
         int[] posicion_jugador = this.grilla.getPosicionJugador();
         ArrayList<Object> resultado = new ArrayList<>();
         resultado.add(posicion_jugador);
-        resultado.add(posiciones_enemigos);
+        resultado.add(posiciones_robots);
         return resultado;
     }
 
     /**
-     * Evalúa si no quedan enemigos en la Grilla (ganar el juego)
+     * Evalúa si no quedan robots en la Grilla (ganar el juego)
      * @return boolean
      */
     public boolean juegoGanado(){
-        var posiciones_enemigos = this.grilla.getPosicionesEnemigos();
-        for (Enemigo enemigo : posiciones_enemigos.keySet()){
-            if (enemigo.getFuncional()){
+        var posiciones_robots = this.grilla.getPosicionesRobots();
+        for (Robot robot : posiciones_robots.keySet()){
+            if (robot.getFuncional()){
                 return false;
             }
         }
