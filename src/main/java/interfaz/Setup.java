@@ -39,10 +39,10 @@ public class Setup {
     }
 
     public static Boton[] inicializar_botones(int tps_seguros, String BOTON_ALEATORIO, String BOTON_SEGURO, String BOTON_ESPERAR, String BOTON_TAMANIO, int ANCHO_VENTANA) {
-        Boton tp_aleatorio = new Boton(STR."\{BOTON_ALEATORIO} (O)",ANCHO_VENTANA / 3,140);
+        Boton tp_aleatorio = new Boton(String.format("%s (O)", BOTON_ALEATORIO),ANCHO_VENTANA / 3,140);
         Boton tp_seguro = new Boton(String.format("%s: %d (P)", BOTON_SEGURO, tps_seguros),ANCHO_VENTANA / 3,140);
-        Boton no_moverse = new Boton(STR. "\{BOTON_ESPERAR} (S)",ANCHO_VENTANA / 3,140);
-        Boton tamanio = new Boton(STR."\{BOTON_TAMANIO} (T)",ANCHO_VENTANA / 8,40);
+        Boton no_moverse = new Boton(String.format("%s (S)", BOTON_ESPERAR),ANCHO_VENTANA / 3,140);
+        Boton tamanio = new Boton(String.format("%s (T)", BOTON_TAMANIO),ANCHO_VENTANA / 8,40);
         return new Boton[]{tp_aleatorio, tp_seguro, no_moverse, tamanio};
     }
 
