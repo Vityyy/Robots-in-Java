@@ -15,6 +15,8 @@ public class Sistema {
     private int score;
     private int tps_seguros;
     private final Grilla grilla;
+    private final ControladorJugador Controlador_J;
+
 
     /**
      * Constructor
@@ -25,8 +27,9 @@ public class Sistema {
         this.nivel = nivel;
         this.n_fil = filas;
         this.n_col = columnas;
-        this.jugador = new Jugador();
-        this.grilla = new Grilla(n_fil, n_col, CreadorDeRobots.crearRobots(nivel, n_fil, n_col));
+        this.jugador = new Jugador(n_fil, n_col);
+        this.grilla = new Grilla(n_fil, n_col, CreadorDeRobots.crearRobots(nivel, n_fil, n_col), jugador);
+        this.Controlador_J = new ControladorJugador(jugador);
     }
 
     /**
@@ -38,51 +41,25 @@ public class Sistema {
         this.nivel = nivel;
         this.n_fil = filas;
         this.n_col = columnas;
-        this.jugador = new Jugador();
-        this.grilla = new Grilla(n_fil, n_col, CreadorDeRobots.crearRobots(nivel, n_fil, n_col));
+        this.jugador = new Jugador(this.n_fil, this.n_col);
+        this.grilla = new Grilla(n_fil, n_col, CreadorDeRobots.crearRobots(nivel, n_fil, n_col),jugador);
+        this.Controlador_J = new ControladorJugador(jugador);
     }
 
-    /**
-     * Permite al jugador moverse por la Grilla.
-     * @param coordenadas posicion a moverse
-     * @return boolean
-     */
-    public boolean jugarTurno(int[] coordenadas){
-        if (coordenadas[0]>=0 && coordenadas[0] < n_fil && coordenadas[1] >= 0 && coordenadas[1] < n_col) {
-            this.jugador.moverse(coordenadas, this.grilla);
-            return this.grilla.actualizarGrilla(this);
+    public boolean turno(int[] coordenadas, int movimiento){
+        if (this.Controlador_J.validarCoordenadas(coordenadas, this.n_fil, this.n_col)) {
+            Controlador_J.elegirMovimiento(coordenadas, movimiento,this, this.n_fil, this.n_col);
+            return this.grilla.actualizarGrilla(this, this.jugador);
         }
         return false;
     }
-
-    /**
-     * Permite al jugador moverse en la Grilla de forma aleatoria.
-     * @return boolean
-     */
-    public boolean jugarTpAleatorio(){
-        int[] coordenadas = new int[]{(int) (Math.random() * (n_fil-1)) ,(int) (Math.random() *(n_col-1))};
-        this.grilla.setPosicionJugador(coordenadas);
-        return jugarTurno(grilla.getPosicionJugador());
-    }
-
-    /**
-     * Permite al jugador moverse en la grilla de forma segura.
-     * @param coordenadas posicion a moverse
-     * @return boolean
-     */
-    public boolean JugarTpSeguro(int[] coordenadas){
-        grilla.setPosicionJugador(coordenadas);
-        tps_seguros -= 1;
-        return jugarTurno(grilla.getPosicionJugador());
-    }
-
     /**
      * Actualiza las posiciones de los robots y del jugador y las devuelve
      * @return ArrayList</Object>
      */
     public ArrayList<Object> estadoJuego(){
         Map<Robot, int[]> posiciones_robots = this.grilla.getPosicionesRobots();
-        int[] posicion_jugador = this.grilla.getPosicionJugador();
+        int[] posicion_jugador = jugador.getPosicionJugador();
         ArrayList<Object> resultado = new ArrayList<>();
         resultado.add(posicion_jugador);
         resultado.add(posiciones_robots);
@@ -107,9 +84,9 @@ public class Sistema {
     public int getScore() {return score;}
     public int getTpsSeguros() {return tps_seguros;}
     public boolean jugadorEstaVivo() {return jugador.getVivo();}
-    public void setJugadorNoVivo() {jugador.setNoVivo();}
-    public int[] getPosicionJugador(){return grilla.getPosicionJugador();}
+    public int[] getPosicionJugador(){return jugador.getPosicionJugador();}
     public void aumentarScore(int score_plus) {this.score += score_plus;}
     public void aumentarTpsSeguros() {this.tps_seguros += 1;}
+    public void reducirTpsSeguros() {this.tps_seguros -= 1;}
     public int[] getDimension(){return new int[]{n_fil,n_col};}
 }

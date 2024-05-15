@@ -32,10 +32,10 @@ public class Evento {
             var movimiento = mapeoMovimiento.get(tecla);
             var coor_jugador = sistema.getPosicionJugador();
             var coordenadas = new int[]{coor_jugador[0] + movimiento[0], coor_jugador[1] + movimiento[1]};
-            return sistema.jugarTurno(coordenadas);
+            return sistema.turno(coordenadas, 1);
 
         } else if (tecla.equals(TECLA_TP_ALEATORIO)){
-            return sistema.jugarTpAleatorio();
+            return sistema.turno(null, 2);
         } else if (tecla.equals(TECLA_TP_SEGURO)){
             botonTpActivado(sistema);
         }
@@ -44,18 +44,18 @@ public class Evento {
     public boolean mouseAccionado(Sistema sistema, int[] coordenadas){
         if (tp_accionado){
             tp_accionado = false;
-            return sistema.JugarTpSeguro(coordenadas);
+            return sistema.turno(coordenadas, 3);
         }
-        return sistema.jugarTurno(coordenadas);
+        return sistema.turno(coordenadas, 1);
     }
     public void botonTpActivado(Sistema sistema){
         if (sistema.getTpsSeguros() > 0) {
             tp_accionado = true;
         }
     }
-    public boolean botonTpAleatorioActivado(Sistema sistema){return sistema.jugarTpAleatorio();}
+    public boolean botonTpAleatorioActivado(Sistema sistema){return sistema.turno(null, 2);}
     public boolean botonNoMoverseActivado(Sistema sistema) {
-        return sistema.jugarTurno(sistema.getPosicionJugador());
+        return sistema.turno(sistema.getPosicionJugador(), 1);
     }
     public Sistema RedimensionarJuego(Sistema sistema, String filasInput, String columnasInput) {
         if (filasInput == null || columnasInput==null)
