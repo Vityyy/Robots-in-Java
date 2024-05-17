@@ -36,7 +36,7 @@ public class ControladorJugador {
      *
      * @param coordenadas posicion a moverse
      */
-    public void jugarTurno(int[] coordenadas) {
+    private void jugarTurno(int[] coordenadas) {
         this.jugador.moverse(coordenadas);
     }
 
@@ -44,7 +44,7 @@ public class ControladorJugador {
      * Permite al jugador moverse en la Grilla de forma aleatoria.
      *
      */
-    public void jugarTpAleatorio(int n_fil, int n_col) {
+    private void jugarTpAleatorio(int n_fil, int n_col) {
         int[] coordenadas = new int[]{(int) (Math.random() * (n_fil - 1)), (int) (Math.random() * (n_col - 1))};
         this.jugador.setPosicionJugador(coordenadas);
         this.jugador.moverse(coordenadas);
@@ -55,7 +55,7 @@ public class ControladorJugador {
      *
      * @param coordenadas posicion a moverse
      */
-    public void jugarTpSeguro(int[] coordenadas) {
+    private void jugarTpSeguro(int[] coordenadas) {
         this.jugador.setPosicionJugador(coordenadas);
         this.jugador.moverse(coordenadas);
     }
