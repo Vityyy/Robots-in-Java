@@ -1,3 +1,12 @@
+## Note: This project was developed during our segundo year of the Computer Engineering program at the University of Buenos Aires.
+_This repository **does not** reflect our current programming level or professional skills. It is kept here as an academic and knowledge record._
+
+------------------------------------------------------------------------------------
+
+**README** available in English and Spanish | **README** disponible en Inglés y en Español
+
+------------------------------------------------------------------------------------
+
 # Robots
 
 2024c1
@@ -67,3 +76,12 @@ Cambiar la constante ALTO_VENTANA en la clase App.
 - Deben estar bien separadas las clases relacionadas con la lógica y la interfaz gráfica, en 2 capas de abstracción.
 - Se debe utilizar polimorfismo para implementar los comportamientos de los distintos robots y las celdas incendiadas.
 - Agregar un diagrama de clases y/o secuencia en formato png o pdf. El diagrama debe incluir las clases principales de la capa lógica.
+
+
+
+------------------------------------------------------------------------------------
+
+## Nota: Este proyecto fue desarrollado durante nuestro segundo año del programa de Ingeniería en Informática en la Universidad de Buenos Aires.
+_Este repositorio **no** refleja nuestro nivel actual de programación ni nuestro set de skills profesionales. Se guarda aquí como un registro académico y de conocimiento.__
+
+------------------------------------------------------------------------------------
